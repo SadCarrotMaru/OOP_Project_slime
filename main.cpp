@@ -1,6 +1,5 @@
-#include <iostream>
-
-int main() {
-    std::cout << "Hello, world!\n";
+#include "map_initialisation.h"
+int main() 
+{
     return 0;
 }

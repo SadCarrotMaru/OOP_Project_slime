@@ -3,7 +3,9 @@
 
 #ifndef LIBRARIES_INCLUDED
 #define LIBRARIES_INCLUDED
-#include <bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<string>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>

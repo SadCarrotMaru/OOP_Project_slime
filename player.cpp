@@ -10,17 +10,17 @@ void Player::initVariables()
 void Player::initShape()
 {
 	sf::Texture player_model;
-    if (!texture.loadFromFile("assets/player.png"))
+    if (!player_model.loadFromFile("assets/player.png"))
     {
         cout<<"Could not load player model";
-        return 0;
+		return; /// end the whole thing
     }
     this->model.setTexture(player_model);
 }
 
 Player::Player(float x, float y)
 {
-	this->shape.setPosition(x, y);
+	this->model.setPosition(x, y);
 	this->initVariables();
 	this->initShape();
 }
@@ -31,32 +31,34 @@ Player::~Player()
 }
 
 //Accessors
+/*
 const sf::RectangleShape & Player::getShape() const
 {
 	return this->shape;
 }
+*/
 
 const int & Player::getHp() const
 {
-	return this->hp;
+	return this->HP;
 }
 
 const int & Player::getHpMax() const
 {
-	return this->hpMax;
+	return this->MAXHP;
 }
 
 //Functions
 void Player::takeDamage(const int damage)
 {
-	if (this->hp > 0) this->hp -= damage;
-	if (this->hp < 0) this->hp = 0;
+	if (this->HP > 0) this->HP -= damage;
+	if (this->HP < 0) this->HP = 0;
 }
 
 void Player::gainHealth(const int health)
 {
-	if (this->hp < this->hpMax)	this->hp += health;
-    if (this->hp > this->hpMax) this->hp = this->hpMax;
+	if (this->HP < this->MAXHP)	this->HP += health;
+    if (this->HP > this->MAXHP) this->HP = this->MAXHP;
 }
 
 void Player::updateInput()
@@ -64,36 +66,36 @@ void Player::updateInput()
 	//Keyboard input (WASD || arrows)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		this->shape.move(-this->movementSpeed, 0.f);
+		this->model.move(-this->movementSpeed, 0.f);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		this->shape.move(this->movementSpeed, 0.f);
+		this->model.move(this->movementSpeed, 0.f);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		this->shape.move(0.f, -this->movementSpeed);
+		this->model.move(0.f, -this->movementSpeed);
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
-		this->shape.move(0.f, this->movementSpeed);
+		this->model.move(0.f, this->movementSpeed);
 	}
 }
 
 void Player::updateWindowBoundsCollision(const sf::RenderTarget * target)
 {
 	//Left
-	if (this->shape.getGlobalBounds().left <= 0.f)
-		this->shape.setPosition(0.f, this->shape.getGlobalBounds().top);
+	if (this->model.getGlobalBounds().left <= 0.f)
+		this->model.setPosition(0.f, this->model.getGlobalBounds().top);
 	//Right
-	if (this->shape.getGlobalBounds().left + this->shape.getGlobalBounds().width >= target->getSize().x)
-		this->shape.setPosition(target->getSize().x - this->shape.getGlobalBounds().width, this->shape.getGlobalBounds().top);
+	if (this->model.getGlobalBounds().left + this->model.getGlobalBounds().width >= target->getSize().x)
+		this->model.setPosition(target->getSize().x - this->model.getGlobalBounds().width, this->model.getGlobalBounds().top);
 	//Top
-	if (this->shape.getGlobalBounds().top <= 0.f)
-		this->shape.setPosition(this->shape.getGlobalBounds().left, 0.f);
+	if (this->model.getGlobalBounds().top <= 0.f)
+		this->model.setPosition(this->model.getGlobalBounds().left, 0.f);
 	//Bottom
-	if (this->shape.getGlobalBounds().top + this->shape.getGlobalBounds().height >= target->getSize().y)
-		this->shape.setPosition(this->shape.getGlobalBounds().left, target->getSize().y - this->shape.getGlobalBounds().height);
+	if (this->model.getGlobalBounds().top + this->model.getGlobalBounds().height >= target->getSize().y)
+		this->model.setPosition(this->model.getGlobalBounds().left, target->getSize().y - this->model.getGlobalBounds().height);
 }
 
 void Player::update(const sf::RenderTarget* target)
@@ -106,5 +108,5 @@ void Player::update(const sf::RenderTarget* target)
 
 void Player::render(sf::RenderTarget * target)
 {
-	target->draw(this->shape);
+	target->draw(this->model);
 }

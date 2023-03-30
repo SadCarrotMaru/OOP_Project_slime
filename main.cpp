@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include "player.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -26,6 +27,14 @@ int main() {
     std::cout << c << "\n";
     delete c;
 
+    sf::RectangleShape rectangle;
+    rectangle.setSize(sf::Vector2f(100, 50));
+    rectangle.setOutlineColor(sf::Color::Red);
+    rectangle.setOutlineThickness(5);
+    rectangle.setPosition(10, 20);
+   
+    //Player Sebi;
+    
     sf::RenderWindow window;
     // NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30
     window.create(sf::VideoMode({800, 700}), "My Window", sf::Style::Default);
@@ -54,6 +63,7 @@ int main() {
         std::this_thread::sleep_for(300ms);
 
         window.clear();
+        window.draw(rectangle);
         window.display();
     }
 

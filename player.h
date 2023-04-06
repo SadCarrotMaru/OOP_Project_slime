@@ -4,6 +4,7 @@ class Player : entity
 {
 private:
 	sf::Sprite model;
+	sf::Texture player_model;
 	item item_help;
 
 	float movementSpeed;
@@ -14,12 +15,12 @@ private:
 
 public:
 	Player(float x = 0.f, float y = 0.f);
-	virtual ~Player();
+	~Player();
 
 	///Accessors
-	const sf::Sprite& getShape() const;
 	const int& getHp() const;
 	const int& getHpMax() const;
+	const sf::Vector2f& getPos() const;
 
 	///Functions
 	void takeDamage(const int damage);
@@ -27,7 +28,13 @@ public:
 
 	///Updates
 	void updateInput();
-	void updateWindowBoundsCollision(const sf::RenderTarget* target);
-	void update(const sf::RenderTarget* target);
+	void updateMapBoundsCollision(const sf::RenderTarget* target, const sf::FloatRect rect);
+	void update(const sf::RenderTarget* target, const sf::FloatRect rect);
 	void render(sf::RenderTarget* target);
+
+	///Output Info
+	friend std::ostream& operator<<(std::ostream& os, const Player& player) {
+		os << "HP:" << player.HP << ", MAXHP: " << player.MAXHP<< ", Movement speed: " << player.movementSpeed << ", Mana: " << player.MANA << '\n';
+		return os;
+	}
 };

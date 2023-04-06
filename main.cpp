@@ -1,9 +1,9 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <chrono>
 #include <thread>
 #include "player.h"
+#include "game.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -26,21 +26,23 @@ int main() {
     SomeClass *c = getC();
     std::cout << c << "\n";
     delete c;
-
-    sf::RectangleShape rectangle;
-    rectangle.setSize(sf::Vector2f(100, 50));
-    rectangle.setOutlineColor(sf::Color::Red);
-    rectangle.setOutlineThickness(5);
-    rectangle.setPosition(10, 20);
    
+    Game main_game;
+    main_game.create_rooms();
+    while (main_game.running())
+    {
+        main_game.pollEvents();
+        main_game.render();
+    }
     //Player Sebi;
     
-    sf::RenderWindow window;
+    /*sf::RenderWindow window;
     // NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30
     window.create(sf::VideoMode({800, 700}), "My Window", sf::Style::Default);
     window.setVerticalSyncEnabled(true);
+    */
     //window.setFramerateLimit(60);
-
+    /*
     while(window.isOpen()) {
         sf::Event e;
         while(window.pollEvent(e)) {
@@ -66,6 +68,6 @@ int main() {
         window.draw(rectangle);
         window.display();
     }
-
+    */
     return 0;
 }

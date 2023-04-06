@@ -2,15 +2,15 @@
 
 void Player::initVariables()
 {
-	this->movementSpeed = 5.f;
+	this->movementSpeed = 8.f;
 	this->MAXHP = 100;
 	this->HP = MAXHP;
+	this->MANA = 30;
 }
 
 void Player::initShape()
 {
-	sf::Texture player_model;
-    if (!player_model.loadFromFile("assets/player.png"))
+    if (!player_model.loadFromFile("A://OOP_Project_slime//assets//player.png"))
     {
         cout<<"Could not load player model";
 		return; /// end the whole thing
@@ -26,17 +26,9 @@ Player::Player(float x, float y)
 }
 
 Player::~Player()
-{
-
-}
+= default;
 
 //Accessors
-/*
-const sf::RectangleShape & Player::getShape() const
-{
-	return this->shape;
-}
-*/
 
 const int & Player::getHp() const
 {
@@ -46,6 +38,11 @@ const int & Player::getHp() const
 const int & Player::getHpMax() const
 {
 	return this->MAXHP;
+}
+
+const sf::Vector2f& Player::getPos() const
+{
+	return this->model.getPosition();
 }
 
 //Functions
@@ -82,28 +79,27 @@ void Player::updateInput()
 	}
 }
 
-void Player::updateWindowBoundsCollision(const sf::RenderTarget * target)
+void Player::updateMapBoundsCollision(const sf::RenderTarget * target, const sf::FloatRect rect)
 {
 	//Left
-	if (this->model.getGlobalBounds().left <= 0.f)
-		this->model.setPosition(0.f, this->model.getGlobalBounds().top);
+	if (this->model.getGlobalBounds().left <= rect.left)
+		this->model.setPosition(rect.left, this->model.getGlobalBounds().top);
 	//Right
-	if (this->model.getGlobalBounds().left + this->model.getGlobalBounds().width >= target->getSize().x)
-		this->model.setPosition(target->getSize().x - this->model.getGlobalBounds().width, this->model.getGlobalBounds().top);
+	if (this->model.getGlobalBounds().left + this->model.getGlobalBounds().width >= rect.left+rect.width)
+		this->model.setPosition(rect.left+rect.width-this->model.getGlobalBounds().width, this->model.getGlobalBounds().top);
 	//Top
-	if (this->model.getGlobalBounds().top <= 0.f)
-		this->model.setPosition(this->model.getGlobalBounds().left, 0.f);
+	if (this->model.getGlobalBounds().top <= rect.top)
+		this->model.setPosition(this->model.getGlobalBounds().left, rect.top);
 	//Bottom
-	if (this->model.getGlobalBounds().top + this->model.getGlobalBounds().height >= target->getSize().y)
-		this->model.setPosition(this->model.getGlobalBounds().left, target->getSize().y - this->model.getGlobalBounds().height);
+	if (this->model.getGlobalBounds().top + this->model.getGlobalBounds().height >= rect.top+rect.height)
+		this->model.setPosition(this->model.getGlobalBounds().left, rect.top+rect.height- this->model.getGlobalBounds().height);
 }
 
-void Player::update(const sf::RenderTarget* target)
+void Player::update(const sf::RenderTarget* target, const sf::FloatRect rect)
 {
 	this->updateInput();
-
 	//Window bounds collision
-	this->updateWindowBoundsCollision(target);
+	this->updateMapBoundsCollision(target,rect);
 }
 
 void Player::render(sf::RenderTarget * target)

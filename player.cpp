@@ -5,7 +5,7 @@ void Player::initVariables()
 	this->movementSpeed = 8.f;
 	this->MAXHP = 100;
 	this->HP = MAXHP;
-	this->MANA = 30;
+	//this->MANA = 30;
 }
 
 void Player::initShape()
@@ -15,6 +15,7 @@ void Player::initShape()
         cout<<"Could not load player model";
 		return; /// end the whole thing
     }
+    this->player_model.setSmooth(true);
     this->model.setTexture(player_model);
 }
 
@@ -35,6 +36,7 @@ const int & Player::getHp() const
 	return this->HP;
 }
 
+/*
 const int & Player::getHpMax() const
 {
 	return this->MAXHP;
@@ -45,7 +47,6 @@ const sf::Vector2f& Player::getPos() const
 	return this->model.getPosition();
 }
 
-//Functions
 void Player::takeDamage(const int damage)
 {
 	if (this->HP > 0) this->HP -= damage;
@@ -56,6 +57,11 @@ void Player::gainHealth(const int health)
 {
 	if (this->HP < this->MAXHP)	this->HP += health;
     if (this->HP > this->MAXHP) this->HP = this->MAXHP;
+}
+*/
+void Player::setPosition(float x, float y)
+{
+    this->model.setPosition(x, y);
 }
 
 void Player::updateInput()
@@ -79,7 +85,7 @@ void Player::updateInput()
 	}
 }
 
-void Player::updateMapBoundsCollision(const sf::RenderTarget * target, const sf::FloatRect rect)
+void Player::updateMapBoundsCollision(const sf::FloatRect rect)
 {
 	//Left
 	if (this->model.getGlobalBounds().left <= rect.left)
@@ -95,11 +101,11 @@ void Player::updateMapBoundsCollision(const sf::RenderTarget * target, const sf:
 		this->model.setPosition(this->model.getGlobalBounds().left, rect.top+rect.height- this->model.getGlobalBounds().height);
 }
 
-void Player::update(const sf::RenderTarget* target, const sf::FloatRect rect)
+void Player::update(const sf::FloatRect rect)
 {
 	this->updateInput();
 	//Window bounds collision
-	this->updateMapBoundsCollision(target,rect);
+	this->updateMapBoundsCollision(rect);
 }
 
 void Player::render(sf::RenderTarget * target)

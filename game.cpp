@@ -3,24 +3,13 @@
 Game::Game()
 {
 	this->possible_rooms.clear();
-	this->initWindow();
-}
-
-void Game::initVariables()
-{
-
-}
-
-void Game::create_possible_rooms()
-{
-
-}
-
-void Game::initWindow()
-{
-	this->videoMode = sf::VideoMode(900, 900);
-	this->window = new sf::RenderWindow(this->videoMode, "Unknown Project", sf::Style::Close | sf::Style::Titlebar);
-	this->window->setFramerateLimit(60);
+    player.setPosition(400,470);
+	///init window
+    this->videoMode = sf::VideoMode(900, 900);
+    this->window = new sf::RenderWindow(this->videoMode, "Unknown Project", sf::Style::Close | sf::Style::Titlebar);
+    this->window->setFramerateLimit(60);
+    ///final init
+    this->endGame = false;
 }
 
 Game::~Game()
@@ -28,14 +17,6 @@ Game::~Game()
 	delete this->window;
 }
 
-const bool& Game::getEndGame() const
-{
-	return this->endGame;
-}
-const sf::VideoMode& Game::getVideoMode() const
-{
-	return this->videoMode;
-}
 bool Game::running() const
 {
 	return this->window->isOpen();
@@ -52,7 +33,6 @@ void Game::pollEvents()
 		case sf::Event::KeyPressed:
 			//this->player.update(this->window);
 			if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
-			if (this->sfmlEvent.key.code == sf::Keyboard::Z) this->possible_rooms[1].get_into_room();
 			break;
 		/*case sf::Event::KeyReleased:
 			this->player.update(this->window);
@@ -65,7 +45,7 @@ void Game::pollEvents()
 
 void Game::updatePlayer()
 {
-	this->player.update(this->window, this->possible_rooms[1].getRectangle());
+	this->player.update(this->current_room.getRectangle());
 
 	if (this->player.getHp() <= 0)
 		this->endGame = true;
@@ -74,34 +54,46 @@ void Game::updatePlayer()
 void Game::setView()
 {
 	sf::Vector2f center_map;
-	center_map.x = (this->possible_rooms[1].getRectangle().left + this->possible_rooms[1].getRectangle().width) / 2;
-	center_map.y = (this->possible_rooms[1].getRectangle().top + this->possible_rooms[1].getRectangle().height) / 2;
-	//this->view.setCenter(this->player.getPos());
+	center_map.x = (this->current_room.getBackgroundRectangle().left + this->current_room.getBackgroundRectangle().width) / 2;
+	center_map.y = (this->current_room.getBackgroundRectangle().top + this->current_room.getBackgroundRectangle().height) / 2;
+	/*
+	this->view.setCenter(this->player.getPos());
+	this->window->setView(this->view);
+	*/
 	this->view.setCenter(center_map);
 	this->view.zoom(2.0f);
 	this->window->setView(this->view);
 	this->view.zoom(0.5f);
-}
+	}
 
 void Game::update()
 {
-	this->pollEvents();
+    this->pollEvents();
+    if (!this->endGame)
+    {
+        this->updatePlayer();
+    }
+    if(this->endGame)
+    {
+        this->window->close();
+    }
 }
-
 void Game::render()
 {
 	this->window->clear();
 	this->updatePlayer();
 	this->setView();
-	this->possible_rooms[1].display_background(this->window);
+	this->current_room.display_background(this->window);
 	this->player.render(this->window);
 	this->window->display();
 }
 
 void Game::create_rooms()
 {
-	room room1("A://OOP_Project_slime//assets//background1.png", "0000");
+	room room1("A://OOP_Project_slime//assets//background1.png", "1111", 140, 240);
 	this->possible_rooms.push_back(room1);
-	room room2("A://OOP_Project_slime//assets//background1.png", "0000");
+	room room2("A://OOP_Project_slime//assets//background2.png", "0000", 140, 240);
 	this->possible_rooms.push_back(room2);
+    this->current_room = this->possible_rooms[0];
+    this->current_room.get_into_room();
 }

@@ -103,6 +103,7 @@ Game::Game (const Game& other)
     this->videoMode = other.videoMode;
     this->view = other.view;
     this->endGame = other.endGame;
+	this->window = new sf::RenderWindow;
     this->window = other.window;
     this->possible_rooms = other.possible_rooms;
     this->current_room = other.current_room;
@@ -119,6 +120,7 @@ Game& Game::operator=(const Game& other)
         this->videoMode = other.videoMode;
         this->view = other.view;
         this->endGame = other.endGame;
+		this->window = new sf::RenderWindow;
         this->window = other.window;
         this->possible_rooms = other.possible_rooms;
         this->current_room = other.current_room;

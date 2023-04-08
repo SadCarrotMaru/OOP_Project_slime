@@ -1,6 +1,6 @@
 #pragma once
 #include "game_construction.h"
-class Player : entity
+class Player : protected entity
 {
 private:
 	sf::Sprite model;

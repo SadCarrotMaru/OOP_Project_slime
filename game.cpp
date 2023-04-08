@@ -90,10 +90,43 @@ void Game::render()
 
 void Game::create_rooms()
 {
-	room room1("A://OOP_Project_slime//assets//background1.png", "1111", 140, 240);
+	room room1("assets/background1.png", "1111", 140, 240);
 	this->possible_rooms.push_back(room1);
-	room room2("A://OOP_Project_slime//assets//background2.png", "0000", 140, 240);
+	room room2("assets/background2.png", "0000", 140, 240);
 	this->possible_rooms.push_back(room2);
     this->current_room = this->possible_rooms[0];
     this->current_room.get_into_room();
+}
+
+Game::Game (const Game& other)
+{
+    this->videoMode = other.videoMode;
+    this->view = other.view;
+    this->endGame = other.endGame;
+    this->window = other.window;
+    this->possible_rooms = other.possible_rooms;
+    this->current_room = other.current_room;
+    this->sfmlEvent = other.sfmlEvent;
+    this->player = other.player;
+    this->font = other.font;
+    this->guiText = other.guiText;
+    this->endGameText = other.endGameText;
+}
+Game& Game::operator=(const Game& other)
+{
+    if (this != &other)
+    {
+        this->videoMode = other.videoMode;
+        this->view = other.view;
+        this->endGame = other.endGame;
+        this->window = other.window;
+        this->possible_rooms = other.possible_rooms;
+        this->current_room = other.current_room;
+        this->sfmlEvent = other.sfmlEvent;
+        this->player = other.player;
+        this->font = other.font;
+        this->guiText = other.guiText;
+        this->endGameText = other.endGameText;
+    }
+    return *this;
 }

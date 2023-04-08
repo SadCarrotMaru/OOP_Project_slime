@@ -10,9 +10,9 @@ void Player::initVariables()
 
 void Player::initShape()
 {
-    if (!player_model.loadFromFile("A://OOP_Project_slime//assets//player.png"))
+    if (!player_model.loadFromFile("assets/player.png"))
     {
-        cout<<"Could not load player model";
+        std::cout<<"Could not load player model";
 		return; /// end the whole thing
     }
     this->player_model.setSmooth(true);

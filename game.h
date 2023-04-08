@@ -15,7 +15,7 @@ private:
 	sf::View view;
 	bool endGame;
 	sf::RenderWindow* window;
-	vector<room>possible_rooms;
+	std::vector<room>possible_rooms;
     room current_room;
 	//room level_layout[5][5];
 	sf::Event sfmlEvent{};
@@ -43,4 +43,9 @@ public:
 	void render();
 
 	void create_rooms();
+
+    ///copy constructor
+    Game(const Game& other);
+    ///copy assignment operator
+    Game& operator=(const Game& other);
 };

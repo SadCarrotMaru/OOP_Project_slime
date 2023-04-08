@@ -1,5 +1,8 @@
 # OOP Template
 
+Resurse: https://bindingofisaacrebirth.fandom.com/wiki/Binding_of_Isaac:_Rebirth_Wiki 
+Proiect: Doresc a realiza un joc 2D cu dungeon-uri. Deoarece imi e destul de greu cu procurarea de imagini specifice jocului voi folosi sprite-uri de la un alt joc (link-ul de mai sus).
+V0.1: Deocamdata este doar caracterul care se misca intr-o camera.
 ### Tema 0
 
 - [ ] Nume proiect (poate fi schimbat ulterior)

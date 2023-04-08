@@ -1,5 +1,5 @@
 #pragma once
-#include "game_construction.h"
+#include "game_construction.hpp"
 class Player : protected entity
 {
 private:
@@ -31,7 +31,7 @@ public:
 	void updateInput();
 	void updateMapBoundsCollision(sf::FloatRect rect);
 	void update(sf::FloatRect rect);
-	void render(sf::RenderTarget* target);
+	void render(sf::RenderTarget* target) const;
 
 	///Output Info
 	friend std::ostream& operator<<(std::ostream& os, const Player& player) {

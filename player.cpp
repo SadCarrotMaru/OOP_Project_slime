@@ -108,7 +108,7 @@ void Player::update(const sf::FloatRect rect)
 	this->updateMapBoundsCollision(rect);
 }
 
-void Player::render(sf::RenderTarget * target)
+void Player::render(sf::RenderTarget * target) const
 {
 	target->draw(this->model);
 }

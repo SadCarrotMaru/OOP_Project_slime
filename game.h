@@ -6,7 +6,7 @@
 #include<sstream>
 
 #include "player.h"
-#include "game_construction.h"
+#include "game_construction.hpp"
 
 class Game
 {
@@ -48,4 +48,5 @@ public:
     Game(const Game& other);
     ///copy assignment operator
     Game& operator=(const Game& other);
+    friend std::ostream& operator<<(std::ostream& out, const Game& game);
 };

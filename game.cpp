@@ -90,7 +90,7 @@ void Game::render()
 
 void Game::create_rooms()
 {
-	room room1("assets/background1.png", "1111", 140, 240);
+	room room1("assets/background1.png", "1000", 140, 240);
 	this->possible_rooms.push_back(room1);
 	room room2("assets/background2.png", "0000", 140, 240);
 	this->possible_rooms.push_back(room2);
@@ -131,4 +131,13 @@ Game& Game::operator=(const Game& other)
         this->endGameText = other.endGameText;
     }
     return *this;
+}
+
+// << operator
+std::ostream& operator<<(std::ostream& out, const Game& game)
+{
+    out << "current_room: \n";
+    out << game.current_room;
+    out << "player: \n";
+    return out;
 }

@@ -84,7 +84,7 @@ class room
         sf::Texture background;
     public:
         room() = default;
-        room(const std::string& background_location, std::string directions, float pixel_error_x_, float pixel_error_y_)
+        room(const std::string& background_location,const std::string &directions,const float pixel_error_x_,const float pixel_error_y_)
         {
             pixel_error_x = pixel_error_x_;
             pixel_error_y = pixel_error_y_;
@@ -112,11 +112,11 @@ class room
             objects.clear();
             items.clear();
         }
-        sf::FloatRect getRectangle()
+        inline sf::FloatRect getRectangle() const
         {
             return rectangle;
         }
-        sf::FloatRect getBackgroundRectangle()
+        inline sf::FloatRect getBackgroundRectangle() const
         {
             return sprite.getLocalBounds();
         }
@@ -135,7 +135,7 @@ class room
             this->rectangle.width -= 2*this->pixel_error_x;
             this->rectangle.height -= 2*this->pixel_error_y;
             door_sprite_north.setOrigin(0.f,0.f);
-            door_sprite_north.setPosition(this->rectangle.left+rectangle.width/2,pixel_error_y);
+            door_sprite_north.setPosition(this->rectangle.left+rectangle.width/2-door_texture.getSize().x/2, pixel_error_y-door_texture.getSize().y);
             door_sprite_south.setOrigin(0.f,0.f);
             door_sprite_south.setPosition(this->rectangle.left+rectangle.width/2,this->rectangle.top+this->rectangle.height-pixel_error_y);
             door_sprite_east.setOrigin(0.f,0.f);
@@ -181,7 +181,12 @@ class room
             this->door_sprite_west = room_to_copy.door_sprite_west;
             return *this;
         }
-
+        ///overload << operator
+        friend std::ostream& operator<<(std::ostream& os, const room& room_to_display)
+        {
+            os << "room: " << room_to_display.rectangle.left << ' ' << room_to_display.rectangle.top << ' ' << room_to_display.rectangle.width << ' ' << room_to_display.rectangle.height << ' ' << room_to_display.door_directions[0] << ' ' << room_to_display.door_directions[1] << ' ' << room_to_display.door_directions[2] << ' ' << room_to_display.door_directions[3] << '\n';
+            return os;
+        }
         //void add_enemy(enemy enemy_to_add) { enemies.push_back(enemy_to_add); }
         //void add_object(misc object) { objects.push_back(object); }
         //void add_item(item item_to_add) { items.push_back(item_to_add); }

@@ -12,7 +12,7 @@ void Player::initShape()
 {
     if (!player_model.loadFromFile("assets/player.png"))
     {
-        std::cout<<"Could not load player model";
+		throw FileError("loading player failed");
 		return; /// end the whole thing
     }
     this->player_model.setSmooth(true);
@@ -63,13 +63,33 @@ void Player::setPosition(float x, float y)
 {
     this->model.setPosition(x, y);
 }
+const sf::Vector2f& Player::getModelCoord() const
+{
+	sf::Vector2f temp = this->model.getPosition();
+	temp.x += this->model.getGlobalBounds().width / 2;
+	temp.y += this->model.getGlobalBounds().height / 2;
+	return temp;
+}
+int Player::check_doors(room* currentroom)
+{
+	if(collision::collisionsprites(this->model.getGlobalBounds(),currentroom->get_north()))
+		return 0;
+	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_south()))
+		return 1;
+	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_east()))
+		return 2;
+	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_west()))
+		return 3;
+	return 4;
 
-void Player::updateInput()
+}
+void Player::updateInput(sf::RenderWindow* window)
 {
 	//Keyboard input (WASD || arrows)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		this->model.move(-this->movementSpeed, 0.f);
+		
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)|| sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
@@ -101,11 +121,15 @@ void Player::updateMapBoundsCollision(const sf::FloatRect rect)
 		this->model.setPosition(this->model.getGlobalBounds().left, rect.top+rect.height- this->model.getGlobalBounds().height);
 }
 
-void Player::update(const sf::FloatRect rect)
+int Player::update(const sf::FloatRect rect, sf::RenderWindow* window, room* currentroom)
 {
-	this->updateInput();
+	this->updateInput(window);
+	//Doors
+	if (this->check_doors(currentroom) != 4)
+		return this->check_doors(currentroom);
 	//Window bounds collision
 	this->updateMapBoundsCollision(rect);
+	return 4;
 }
 
 void Player::render(sf::RenderTarget * target) const

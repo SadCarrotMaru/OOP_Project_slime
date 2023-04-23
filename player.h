@@ -5,7 +5,7 @@ class Player : protected entity
 private:
 	sf::Sprite model;
 	sf::Texture player_model;
-	item item_help;
+	//item item_help;
 
 	float movementSpeed{};
 	//int MANA;
@@ -19,6 +19,7 @@ public:
 
 	///Accessors
 	const int& getHp() const;
+	const sf::Vector2f& getModelCoord() const;
 	//const int& getHpMax() const;
 	//const sf::Vector2f& getPos() const;
 
@@ -28,10 +29,12 @@ public:
 
 	///Updates
 	void setPosition(float x, float y);
-	void updateInput();
+	void updateInput(sf::RenderWindow* window);
 	void updateMapBoundsCollision(sf::FloatRect rect);
-	void update(sf::FloatRect rect);
+	int update(sf::FloatRect rect, sf::RenderWindow* window, room* currentroom);
 	void render(sf::RenderTarget* target) const;
+
+	int check_doors(room* currentroom);
 
 	///Output Info
 	friend std::ostream& operator<<(std::ostream& os, const Player& player) {

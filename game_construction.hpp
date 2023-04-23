@@ -2,25 +2,21 @@
 #include<iostream>
 #include<vector>
 #include<string>
+#include<cmath>
+#include<random>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include "projectile.h"
 class effect
 {
     protected:
         std::string effect_name;
         std::vector<std::pair<std::string,std::string>>modifiers;
 };
-class projectile
-{
-    protected:
-        std::vector<std::pair<int,int>>coordinates_affected;
-        std::string type_of_projectile;
-        std::string direction;
-        effect effect_on_projectile;
-};
+/*
 class ability
 {
     protected:
@@ -33,19 +29,22 @@ class weapon
         std::string weapon_name;
         ability weapon_ability;
         projectile area_affected_by_weapon;
+    public:
+        weapon() = default;
 };
+*/
 class item
 {
-    protected:
-        std::string item_name;
-        std::string class_affected;
-        std::vector<effect>effects;
+protected:
+    std::string item_name;
+    std::string class_affected;
+    std::vector<effect>effects;
 };
 class entity
 {
     protected: 
         int HP, MAXHP;
-        weapon weapon_held;
+        //weapon weapon_held;
         effect effect_applied_on_entity;
     public:
         entity()
@@ -54,7 +53,7 @@ class entity
             HP = MAXHP;
         }
 };
-class enemy : protected entity
+class enemy : public entity
 {
     private:
         //bool phase2 = false;
@@ -66,22 +65,65 @@ class misc
         sf::Sprite sprite_misc;
 };
 
+
+template <class T> class SmartPtr {
+    T* ptr;
+public:
+    explicit SmartPtr(T* p = nullptr) { ptr = p; }
+
+    ~SmartPtr() { delete (ptr); }
+
+    SmartPtr(const SmartPtr& sptr) { ptr = new T(*sptr.ptr); }
+
+    //overload = operator
+    SmartPtr& operator=(const SmartPtr& sptr)
+    {
+        if (this == &sptr)
+            return *this;
+        delete ptr;
+        ptr = new T(*sptr.ptr);
+        return *this;
+    }
+
+    T& operator*() { return *ptr; }
+
+
+    T* operator->() { return ptr; }
+};
+class collision
+{
+    public:
+        static bool collisionsprites(sf::FloatRect rect1, sf::FloatRect rect2)
+        {
+           // std::cout << rect1.top << ' ' << rect1.height << ' ' << rect1.left << ' ' << rect1.width << std::endl;
+           // std::cout << rect2.top << ' ' << rect2.height << ' ' << rect2.left << ' ' << rect2.width << std::endl;
+            if (rect1.intersects(rect2))
+            {
+                return true;
+            }
+            return false;
+        }
+};
+
+
+
 class room
 {
     private:
-        sf::Texture door_texture;
+        sf::Texture door_texture_north, door_texture_south, door_texture_east, door_texture_west;
         sf::Sprite door_sprite_north, door_sprite_south, door_sprite_east, door_sprite_west;
         sf::Sprite sprite;
         sf::Vector2u size;
         sf::FloatRect rectangle;
         float pixel_error_x=0.f, pixel_error_y=0.f;
 
-        std::vector<misc>objects;
-        std::vector<enemy>enemies;
-        std::vector<item>items;
+        std::vector<SmartPtr<misc>>objects;
+        std::vector<SmartPtr<enemy>>enemies;
+        std::vector<SmartPtr<item>>items;
         bool door_directions[4]={false,false,false,false};
-        // bool final_boss_level;
+
         sf::Texture background;
+        bool level_cleared = false;
     public:
         room() = default;
         room(const std::string& background_location,const std::string &directions,const float pixel_error_x_,const float pixel_error_y_)
@@ -94,14 +136,27 @@ class room
             if (directions[3] == '1') door_directions[3] = true;
             if (!background.loadFromFile(background_location))
             {
-                std::cout << "loading failed";
-                /// throw error
+                throw FileError("background loading failed");
                 return;
             }
-            if(!this->door_texture.loadFromFile("assets/door.png"))
+            if(!this->door_texture_north.loadFromFile("assets/door_north.png"))
             {
-                std::cout << "loading failed";
-                /// throw error
+                throw FileError("door loading failed - N");
+                return;
+            }
+            if (!this->door_texture_east.loadFromFile("assets/door_east.png"))
+            {
+                throw FileError("door loading failed - E");
+                return;
+            }
+            if (!this->door_texture_south.loadFromFile("assets/door_south.png"))
+            {
+                throw FileError("door loading failed - S");
+                return;
+            }
+            if (!this->door_texture_west.loadFromFile("assets/door_west.png"))
+            {
+                throw FileError("door loading failed - W");
                 return;
             }
 
@@ -120,28 +175,52 @@ class room
         {
             return sprite.getLocalBounds();
         }
+        inline sf::FloatRect get_north() const
+        {
+            return door_sprite_north.getGlobalBounds();
+        }
+        inline sf::FloatRect get_south() const
+        {
+            return door_sprite_south.getGlobalBounds();
+        }
+        inline sf::FloatRect get_east() const
+        {
+            return door_sprite_east.getGlobalBounds();
+        }
+        inline sf::FloatRect get_west() const
+        {
+            return door_sprite_west.getGlobalBounds();
+        }
+        inline bool getdoor(int poz) const
+        {
+            return this->door_directions[poz];
+        }
+        void set_door(int poz)
+        {
+            this->door_directions[poz] = true;
+        }
         void get_into_room()
         {
             size = background.getSize();
             sprite.setTexture(background);
             sprite.setOrigin(0.f,0.f);
-            door_sprite_north.setTexture(door_texture);
-            door_sprite_south.setTexture(door_texture);
-            door_sprite_east.setTexture(door_texture);
-            door_sprite_west.setTexture(door_texture);
+            door_sprite_north.setTexture(door_texture_north);
+            door_sprite_south.setTexture(door_texture_south);
+            door_sprite_east.setTexture(door_texture_east);
+            door_sprite_west.setTexture(door_texture_west);
             this->rectangle = sprite.getLocalBounds();
             this->rectangle.left += this->pixel_error_x;
             this->rectangle.top += this->pixel_error_y;
             this->rectangle.width -= 2*this->pixel_error_x;
             this->rectangle.height -= 2*this->pixel_error_y;
             door_sprite_north.setOrigin(0.f,0.f);
-            door_sprite_north.setPosition(this->rectangle.left+rectangle.width/2-door_texture.getSize().x/2, pixel_error_y-door_texture.getSize().y);
+            door_sprite_north.setPosition(this->rectangle.left+rectangle.width/2-(float)door_texture_north.getSize().x/2, pixel_error_y-(float)door_texture_north.getSize().y);
             door_sprite_south.setOrigin(0.f,0.f);
-            door_sprite_south.setPosition(this->rectangle.left+rectangle.width/2,this->rectangle.top+this->rectangle.height-pixel_error_y);
+            door_sprite_south.setPosition(this->rectangle.left+rectangle.width/2-(float)door_texture_south.getSize().x/2, this->rectangle.top+this->rectangle.height - 10 );
             door_sprite_east.setOrigin(0.f,0.f);
-            door_sprite_east.setPosition(this->rectangle.left+this->rectangle.width-pixel_error_x,this->rectangle.top+this->rectangle.height/2);
+            door_sprite_east.setPosition(this->rectangle.left+this->rectangle.width, this->rectangle.top + this->rectangle.height / 2 - (float)door_texture_east.getSize().y / 2);
             door_sprite_west.setOrigin(0.f,0.f);
-            door_sprite_west.setPosition(this->pixel_error_x,this->rectangle.top+this->rectangle.height/2);
+            door_sprite_west.setPosition(this->rectangle.left-(float)door_texture_west.getSize().x, this->rectangle.top + this->rectangle.height / 2 - (float)door_texture_west.getSize().y / 2);
             std::cout << rectangle.top << ' ' << rectangle.left << ' ' << rectangle.width << ' ' << rectangle.height << '\n';
         }
         void display_background(sf::RenderTarget* target)
@@ -154,7 +233,25 @@ class room
 
         }
         ///copy constructor
-        room(const room& other): door_texture(other.door_texture), door_sprite_north(other.door_sprite_north), door_sprite_south(other.door_sprite_south), door_sprite_east(other.door_sprite_east), door_sprite_west(other.door_sprite_west), sprite(other.sprite), size(other.size), rectangle(other.rectangle), pixel_error_x(other.pixel_error_x), pixel_error_y(other.pixel_error_y), objects(other.objects), enemies(other.enemies), items(other.items), door_directions{other.door_directions[0],other.door_directions[1],other.door_directions[2],other.door_directions[3]}, background(other.background)
+        room(const room& other): 
+            door_texture_north(other.door_texture_north), 
+            door_texture_south(other.door_texture_south), 
+            door_texture_east(other.door_texture_east), 
+            door_texture_west(other.door_texture_west), 
+            door_sprite_north(other.door_sprite_north), 
+            door_sprite_south(other.door_sprite_south), 
+            door_sprite_east(other.door_sprite_east), 
+            door_sprite_west(other.door_sprite_west), 
+            sprite(other.sprite), size(other.size), 
+            rectangle(other.rectangle), 
+            pixel_error_x(other.pixel_error_x), 
+            pixel_error_y(other.pixel_error_y), 
+            objects(other.objects), 
+            enemies(other.enemies), 
+            items(other.items), 
+            door_directions{other.door_directions[0],other.door_directions[1],other.door_directions[2],other.door_directions[3]}, 
+            background(other.background), 
+            level_cleared(other.level_cleared)
         {
             /// copy constructor called
         }
@@ -174,11 +271,15 @@ class room
             this->rectangle = room_to_copy.rectangle;
             this->size = room_to_copy.size;
             this->sprite = room_to_copy.sprite;
-            this->door_texture = room_to_copy.door_texture;
+            this->door_texture_north = room_to_copy.door_texture_north;
+            this->door_texture_south = room_to_copy.door_texture_south;
+            this->door_texture_east = room_to_copy.door_texture_east;
+            this->door_texture_west = room_to_copy.door_texture_west;
             this->door_sprite_north = room_to_copy.door_sprite_north;
             this->door_sprite_south = room_to_copy.door_sprite_south;
             this->door_sprite_east = room_to_copy.door_sprite_east;
             this->door_sprite_west = room_to_copy.door_sprite_west;
+            this->level_cleared = room_to_copy.level_cleared;
             return *this;
         }
         ///overload << operator

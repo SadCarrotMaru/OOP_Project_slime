@@ -16,8 +16,12 @@ private:
 	bool endGame;
 	sf::RenderWindow* window;
 	std::vector<room>possible_rooms;
+    std::vector<projectile>projectiles;
     room current_room;
-	//room level_layout[5][5];
+	resource_holder rh;
+    //room layout
+    room roomlayout[7][7];
+	
 	sf::Event sfmlEvent{};
 
 	Player player;
@@ -36,13 +40,16 @@ public:
     bool running() const;
 	void pollEvents();
     void update();
+    void add_projectile(const projectile& projectile_);
 
 	void updatePlayer();
 	void setView();
 
 	void render();
 
+	void fill_dungeon(int x, int y);
 	void create_rooms();
+    void generate_dungeon();
 
     ///copy constructor
     Game(const Game& other);

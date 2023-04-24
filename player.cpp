@@ -13,7 +13,6 @@ void Player::initShape()
     if (!player_model.loadFromFile("assets/player.png"))
     {
 		throw FileError("loading player failed");
-		return; /// end the whole thing
     }
     this->player_model.setSmooth(true);
     this->model.setTexture(player_model);

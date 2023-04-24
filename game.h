@@ -40,7 +40,7 @@ public:
     bool running() const;
 	void pollEvents();
     void update();
-    void add_projectile(const projectile& projectile_);
+    //void add_projectile(const projectile& projectile_);
 
 	void updatePlayer();
 	void setView();

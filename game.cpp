@@ -119,9 +119,9 @@ void Game::render()
 }
 
 
-void Game::add_projectile(const projectile& projectile_) {
-    this->projectiles.push_back(projectile_);
-}
+//void Game::add_projectile(const projectile& projectile_) {
+//    this->projectiles.push_back(projectile_);
+//}
 
 void Game::fill_dungeon(int x, int y)
 {
@@ -150,7 +150,7 @@ void Game::fill_dungeon(int x, int y)
                 if (i == 0) pair = 1;
                 else if (i == 1) pair = 0;
                 else if (i == 2) pair = 3;
-                else pair = 4;
+                else pair = 2;
                 if (this->roomlayout[x + dx[i]][y + dy[i]].getdoor(pair) == false)
                 {
                     this->roomlayout[x + dx[i]][y + dy[i]].set_door(pair);
@@ -163,11 +163,7 @@ void Game::fill_dungeon(int x, int y)
     {
         int i = 0;
         this->roomlayout[x][y].set_door(i);
-        int pair;
-        if (i == 0) pair = 1;
-        else if (i == 1) pair = 0;
-        else if (i == 2) pair = 3;
-        else pair = 4;
+        int pair = 1;
         if (this->roomlayout[x + dx[i]][y + dy[i]].getdoor(pair) == false)
         {
             this->roomlayout[x + dx[i]][y + dy[i]].set_door(pair);
@@ -180,7 +176,6 @@ void Game::fill_dungeon(int x, int y)
 void Game::generate_dungeon()
 {
     this->roomlayout[3][3]=this->possible_rooms[0];
-    int x = 3, y = 3;
     this->fill_dungeon(3, 3);
     this->current_room = this->roomlayout[3][3];
     this->current_room.get_into_room();

@@ -49,7 +49,7 @@ protected:
     sf::Vector2f destination;
     float projectile_speed;
 public:
-    projectile(const std::string& type_of_projectile_, sf::Vector2f direction_, float projectile_speed_, sf::Vector2f destination_, sf::Vector2f playerpos_, resource_holder &rh);
+    projectile(const std::string& type_of_projectile_, const sf::Vector2f& direction_, float projectile_speed_, const sf::Vector2f& destination_, sf::Vector2f playerpos_, resource_holder &rh);
     void update();
     void render(sf::RenderTarget* target);
     bool check(const sf::FloatRect rect);

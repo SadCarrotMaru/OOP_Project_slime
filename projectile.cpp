@@ -1,8 +1,7 @@
 #include "projectile.h"
 
-projectile::projectile(std::string type_of_projectile_, sf::Vector2f direction_, float projectile_speed_, sf::Vector2f destination_, sf::Vector2f playerpos_, resource_holder &rh)
+projectile::projectile(std::string type_of_projectile_, sf::Vector2f direction_, float projectile_speed_, sf::Vector2f destination_, sf::Vector2f playerpos_, resource_holder &rh) : type_of_projectile (type_of_projectile_)
 {
-    type_of_projectile = type_of_projectile_;
     direction = direction_;
     projectile_speed = projectile_speed_;
     destination = destination_;

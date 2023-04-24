@@ -56,7 +56,7 @@ void Game::pollEvents()
 
 void Game::updatePlayer()
 {
-	int temp = this->player.update(this->current_room.getRectangle(), this->window, &(this->current_room));
+	int temp = this->player.update(this->current_room.getRectangle(), &(this->current_room));
     std::cout << temp;
 	if (this->player.getHp() <= 0)
 		this->endGame = true;
@@ -102,7 +102,7 @@ void Game::render()
 	this->current_room.display_background(this->window);
     if (!this->projectiles.empty())
     {
-        for (int i = 0; i < this->projectiles.size(); i++)
+        for (int i = 0; i < (int)this->projectiles.size(); i++)
         {
             auto projectile_ = &(this->projectiles[i]);
             projectile_->update();

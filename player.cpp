@@ -64,7 +64,7 @@ void Player::setPosition(float x, float y)
 }
 const sf::Vector2f& Player::getModelCoord() const
 {
-	sf::Vector2f temp = this->model.getPosition();
+	static sf::Vector2f temp = this->model.getPosition();
 	temp.x += this->model.getGlobalBounds().width / 2;
 	temp.y += this->model.getGlobalBounds().height / 2;
 	return temp;
@@ -82,7 +82,7 @@ int Player::check_doors(room* currentroom)
 	return 4;
 
 }
-void Player::updateInput(sf::RenderWindow* window)
+void Player::updateInput()
 {
 	//Keyboard input (WASD || arrows)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -120,9 +120,9 @@ void Player::updateMapBoundsCollision(const sf::FloatRect rect)
 		this->model.setPosition(this->model.getGlobalBounds().left, rect.top+rect.height- this->model.getGlobalBounds().height);
 }
 
-int Player::update(const sf::FloatRect rect, sf::RenderWindow* window, room* currentroom)
+int Player::update(const sf::FloatRect rect, room* currentroom)
 {
-	this->updateInput(window);
+	this->updateInput();
 	//Doors
 	if (this->check_doors(currentroom) != 4)
 		return this->check_doors(currentroom);

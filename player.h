@@ -29,9 +29,9 @@ public:
 
 	///Updates
 	void setPosition(float x, float y);
-	void updateInput(sf::RenderWindow* window);
+	void updateInput();
 	void updateMapBoundsCollision(sf::FloatRect rect);
-	int update(sf::FloatRect rect, sf::RenderWindow* window, room* currentroom);
+	int update(sf::FloatRect rect, room* currentroom);
 	void render(sf::RenderTarget* target) const;
 
 	int check_doors(room* currentroom);

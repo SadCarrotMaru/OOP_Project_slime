@@ -20,12 +20,12 @@ protected:
 
 class TextureError : public Error {
 public:
-    TextureError(const char* message) : Error(message) {}
+    explicit TextureError(const char* message) : Error(message) {}
 };
 
 class FileError : public Error {
 public:
-    FileError(const char* message) : Error(message) {}
+    explicit FileError(const char* message) : Error(message) {}
 };
 class resource_holder {
     public:
@@ -35,7 +35,6 @@ class resource_holder {
             if (!projectile_texture.loadFromFile("assets/projectile.png"))
             {
                 throw FileError("loading projectile failed");
-                return; /// end the whole thing
             }
         }
 

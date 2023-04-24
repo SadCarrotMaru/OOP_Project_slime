@@ -133,8 +133,8 @@ void Game::fill_dungeon(int x, int y)
         auto for_room = dist(mt);
         this->roomlayout[x][y] = this->possible_rooms[for_room];
     }
-    int dx[] = { -1,1,0,0 };
-    int dy[] = { 0,0,1,-1 };
+    const int dx[] = { -1,1,0,0 };
+    const int dy[] = { 0,0,1,-1 };
     int cnt = 0;
     for (int i = 0; i < 4; i++)
     {

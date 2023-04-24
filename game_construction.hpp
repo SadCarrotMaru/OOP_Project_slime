@@ -137,27 +137,22 @@ class room
             if (!background.loadFromFile(background_location))
             {
                 throw FileError("background loading failed");
-                return;
             }
             if(!this->door_texture_north.loadFromFile("assets/door_north.png"))
             {
                 throw FileError("door loading failed - N");
-                return;
             }
             if (!this->door_texture_east.loadFromFile("assets/door_east.png"))
             {
                 throw FileError("door loading failed - E");
-                return;
             }
             if (!this->door_texture_south.loadFromFile("assets/door_south.png"))
             {
                 throw FileError("door loading failed - S");
-                return;
             }
             if (!this->door_texture_west.loadFromFile("assets/door_west.png"))
             {
                 throw FileError("door loading failed - W");
-                return;
             }
 
         }

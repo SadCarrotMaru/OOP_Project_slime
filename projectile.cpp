@@ -2,7 +2,7 @@
 
 projectile::projectile(const std::string &type_of_projectile_, const sf::Vector2f &direction_, float projectile_speed_, const sf::Vector2f &destination_, sf::Vector2f playerpos_, resource_holder &rh) : type_of_projectile (type_of_projectile_), direction(direction_), destination(destination_)
 {
-    direction = direction_;
+    projectile_speed = projectile_speed_;
     this->projectile_sprite.setTexture(rh.projectile_texture);
     this->projectile_sprite.setPosition(playerpos_);
     this->projectile_sprite.setOrigin(25.0f, 25.0f);

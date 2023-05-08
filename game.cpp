@@ -2,6 +2,7 @@
 
 Game::Game()
 {
+    xr = yr = 3;
     for (int i = 1; i <= 6; i++)
         for (int j = 1; j <= 6; j++)
             this->visited[i][j] = false;
@@ -156,7 +157,7 @@ void Game::updateProjectiles()
 void Game::handle_enemy()
 {
     if (entities.size() == 1) this->current_room.set_level_clear(true);
-    for(int i=1 ; i< this->entities.size();i++)
+    for(int i=1 ; i< (int)this->entities.size();i++)
     {
         enemy* en =  dynamic_cast<enemy*>(this->entities[i]);
         en->movement_update(this->player.getModelCoord(), this->enemy_projectiles, this->current_room.getRectangle(), this->rh);
@@ -165,7 +166,7 @@ void Game::handle_enemy()
 }
 void Game::render_enemy()
 {
-    for (int i=1; i<this->entities.size() ; i++)
+    for (int i=1; i<(int)this->entities.size() ; i++)
     {
         enemy* en = dynamic_cast<enemy*>(this->entities[i]);
         en->render(this->window);
@@ -173,7 +174,7 @@ void Game::render_enemy()
 }
 void Game::checkcolliders()
 {
-    for (int z = 0; z<this->entities.size();z++)
+    for (int z = 0; z<(int)this->entities.size();z++)
     {
         auto ptr = this->entities[z];
         if (ptr == dynamic_cast<enemy*>(ptr))
@@ -198,7 +199,7 @@ void Game::checkcolliders()
             }
             if (collision::collisionsprites(ptr->getrect(), this->player.getrect()))
             {
-                this->player.getdamage(5);
+                this->player.getdamage(10);
             }
         }
         else
@@ -384,6 +385,8 @@ Game::Game (const Game& other)
     this->font = other.font;
     this->guiText = other.guiText;
     this->endGameText = other.endGameText;
+    this->xr = other.xr;
+    this->yr = other.yr;
 }
 Game& Game::operator=(const Game& other)
 {
@@ -401,6 +404,8 @@ Game& Game::operator=(const Game& other)
         this->font = other.font;
         this->guiText = other.guiText;
         this->endGameText = other.endGameText;
+        this->xr = other.xr;
+        this->yr = other.yr;
     }
     return *this;
 }

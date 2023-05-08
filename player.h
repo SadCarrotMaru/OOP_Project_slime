@@ -5,6 +5,7 @@ class Player : public entity
 private:
 	sf::Sprite model;
 	sf::Texture player_model;
+	std::chrono::high_resolution_clock::time_point last = std::chrono::high_resolution_clock::now();
 	//item item_help;
 
 	float movementSpeed{};
@@ -19,7 +20,7 @@ public:
 
 	///Accessors
 	const int& getHp() const;
-	const sf::Vector2f& getModelCoord() const;
+	const sf::Vector2f getModelCoord() const;
 	//const int& getHpMax() const;
 	//const sf::Vector2f& getPos() const;
 

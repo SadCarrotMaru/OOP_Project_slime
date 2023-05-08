@@ -2,8 +2,12 @@
 
 void Player::getdamage(const int damagetaken)
 {
-	this->HP -= damagetaken;
-
+	std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+	if (std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 0.3)
+	{
+		this->HP -= damagetaken;
+		last = std::chrono::high_resolution_clock::now();
+	}
 }
 void Player::initVariables()
 {
@@ -62,7 +66,7 @@ void Player::setPosition(float x, float y)
 {
     this->model.setPosition(x, y);
 }
-const sf::Vector2f& Player::getModelCoord() const
+const sf::Vector2f Player::getModelCoord() const
 {
 	sf::Vector2f temp = this->model.getPosition();
 	temp.x += this->model.getGlobalBounds().width / 2;

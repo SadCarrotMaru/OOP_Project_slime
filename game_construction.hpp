@@ -107,9 +107,9 @@ class enemy : public entity
                 direction.x /= length;
                 direction.y /= length;
                 this->model.move(direction * this->speed);
-                //shoot projectile every 3 seconds
+                //shoot projectile every 1.5 seconds
                 std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
-                if(std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 3)
+                if(std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 1.5)
                 {
                     last = now;
                     enemy_projectiles.push_back(projectile("enemy", direction, 24.0f, player_pos, this->model.getPosition(), rh));
@@ -297,7 +297,7 @@ class room
             this->enemies.clear();
             sf::FloatRect help = this->getRectangle();
             int xx = help.left, xx2 = xx + help.width;
-            int yy = help.top, yy2 = yy = help.height;
+            int yy = help.top, yy2 = yy + help.height;
 
             std::random_device rd;
             std::mt19937 mt(rd());

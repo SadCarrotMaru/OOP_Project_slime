@@ -9,10 +9,10 @@
 #endif
 
 int main() {
-    #ifdef __linux__
+#ifdef __linux__
     XInitThreads();
-    #endif
-   
+#endif
+
     Game main_game;
     main_game.create_rooms();
     while (main_game.running())

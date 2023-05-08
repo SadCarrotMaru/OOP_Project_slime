@@ -3,7 +3,8 @@
 projectile::projectile(const std::string &type_of_projectile_, const sf::Vector2f &direction_, float projectile_speed_, const sf::Vector2f &destination_, sf::Vector2f playerpos_, resource_holder &rh) : type_of_projectile (type_of_projectile_), direction(direction_), destination(destination_)
 {
     projectile_speed = projectile_speed_;
-    this->projectile_sprite.setTexture(rh.projectile_texture);
+    if(type_of_projectile_ == "allied") this->projectile_sprite.setTexture(rh.projectile_texture);
+        else this->projectile_sprite.setTexture(rh.enemy_projectile_texture);
     this->projectile_sprite.setPosition(playerpos_);
     this->projectile_sprite.setOrigin(25.0f, 25.0f);
 }
@@ -22,4 +23,8 @@ bool projectile::check(const sf::FloatRect rect)
 void projectile::render(sf::RenderTarget* target)
 {
     target->draw(this->projectile_sprite);
+}
+sf::FloatRect projectile::get_projectile() const
+{
+    return this->projectile_sprite.getGlobalBounds();
 }

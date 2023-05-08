@@ -4,6 +4,8 @@
 #include<ctime>
 #include<vector>
 #include<sstream>
+#include <thread>
+#include <chrono>
 
 #include "player.h"
 #include "game_construction.hpp"
@@ -16,14 +18,16 @@ private:
 	bool endGame;
 	sf::RenderWindow* window;
 	std::vector<room>possible_rooms;
-    std::vector<projectile>projectiles;
+    std::vector<projectile>ally_projectiles;
+    std::vector<projectile>enemy_projectiles;
     room current_room;
 	resource_holder rh;
     //room layout
     room roomlayout[7][7];
-	
+	bool visited[7][7];
+	int xr, yr;
 	sf::Event sfmlEvent{};
-
+	std::vector<entity*>entities;
 	Player player;
 
 	sf::Font font;
@@ -46,14 +50,19 @@ public:
 	void setView();
 
 	void render();
+	void checkcolliders();
+	void updateProjectiles();
 
 	void fill_dungeon(int x, int y);
 	void create_rooms();
     void generate_dungeon();
+    void handle_enemy();
+    void render_enemy();
 
     ///copy constructor
     Game(const Game& other);
     ///copy assignment operator
     Game& operator=(const Game& other);
     friend std::ostream& operator<<(std::ostream& out, const Game& game);
+
 };

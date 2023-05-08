@@ -1,10 +1,13 @@
 #include "player.h"
 
+void Player::getdamage(const int damagetaken)
+{
+	this->HP -= damagetaken;
+
+}
 void Player::initVariables()
 {
-	this->movementSpeed = 8.f;
-	this->MAXHP = 100;
-	this->HP = MAXHP;
+	this->movementSpeed = 10.f;
 	//this->MANA = 30;
 }
 
@@ -18,15 +21,12 @@ void Player::initShape()
     this->model.setTexture(player_model);
 }
 
-Player::Player(float x, float y)
+Player::Player(float x, float y) : entity()
 {
 	this->model.setPosition(x, y);
 	this->initVariables();
 	this->initShape();
 }
-
-Player::~Player()
-= default;
 
 //Accessors
 
@@ -64,20 +64,20 @@ void Player::setPosition(float x, float y)
 }
 const sf::Vector2f& Player::getModelCoord() const
 {
-	static sf::Vector2f temp = this->model.getPosition();
+	sf::Vector2f temp = this->model.getPosition();
 	temp.x += this->model.getGlobalBounds().width / 2;
 	temp.y += this->model.getGlobalBounds().height / 2;
 	return temp;
 }
 int Player::check_doors(room* currentroom)
 {
-	if(collision::collisionsprites(this->model.getGlobalBounds(),currentroom->get_north()))
+	if(collision::collisionsprites(this->model.getGlobalBounds(),currentroom->get_north()) && currentroom->getdoor(0) == true)
 		return 0;
-	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_south()))
+	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_south()) && currentroom->getdoor(1) == true)
 		return 1;
-	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_east()))
+	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_east()) && currentroom->getdoor(2) == true)
 		return 2;
-	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_west()))
+	if (collision::collisionsprites(this->model.getGlobalBounds(), currentroom->get_west()) && currentroom->getdoor(3) == true)
 		return 3;
 	return 4;
 
@@ -124,14 +124,24 @@ int Player::update(const sf::FloatRect rect, room* currentroom)
 {
 	this->updateInput();
 	//Doors
-	if (this->check_doors(currentroom) != 4)
-		return this->check_doors(currentroom);
+	int temp = this->check_doors(currentroom);
 	//Window bounds collision
 	this->updateMapBoundsCollision(rect);
+	if (temp != 4)
+		return temp;
 	return 4;
 }
 
 void Player::render(sf::RenderTarget * target) const
 {
 	target->draw(this->model);
+}
+
+const sf::FloatRect Player::getrect() const
+{
+	return this->model.getGlobalBounds();
+}
+int Player::getHP() const
+{
+    return this->HP;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "game_construction.hpp"
-class Player : protected entity
+class Player : public entity
 {
 private:
 	sf::Sprite model;
@@ -14,8 +14,8 @@ private:
 	void initShape();
 
 public:
-	explicit Player(float x = 0.f, float y = 0.f);
-	~Player();
+	explicit Player(float x = 0.f, float y = 0.f) ;
+	~Player() = default;
 
 	///Accessors
 	const int& getHp() const;
@@ -26,6 +26,7 @@ public:
 	///Functions
 	//void takeDamage(const int damage);
 	//void gainHealth(const int health);
+	void getdamage(const int damagetaken) override;
 
 	///Updates
 	void setPosition(float x, float y);
@@ -33,8 +34,11 @@ public:
 	void updateMapBoundsCollision(sf::FloatRect rect);
 	int update(sf::FloatRect rect, room* currentroom);
 	void render(sf::RenderTarget* target) const;
+	const sf::FloatRect getrect() const override;
+    int getHP() const override;
 
 	int check_doors(room* currentroom);
+	entity* clone() const override { return new Player(*this); }
 
 	///Output Info
 	friend std::ostream& operator<<(std::ostream& os, const Player& player) {

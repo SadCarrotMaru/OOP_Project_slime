@@ -70,9 +70,8 @@ class enemy : public entity
         int sign1,sign2;
         std::chrono::high_resolution_clock::time_point last = std::chrono::high_resolution_clock::now();
     public:
-        enemy(const std::string &name, const sf::Vector2f position, int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : entity(maxhp)
+        enemy(const std::string &name, const sf::Vector2f position, int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : entity(maxhp), enemy_name(name)
         {
-            enemy_name = name;
             if(enemy_name == "bat")
             {
                 this->speed = 1.5f;

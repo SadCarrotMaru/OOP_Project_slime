@@ -4,8 +4,12 @@ Game::Game()
 {
     xr = yr = 3;
     for (int i = 1; i <= 6; i++)
+    {
         for (int j = 1; j <= 6; j++)
+        {
             this->visited[i][j] = false;
+        }
+    }
 	this->possible_rooms.clear();
     player.setPosition(400,470);
     this->entities.push_back(&player);

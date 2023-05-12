@@ -36,7 +36,7 @@ class animation
             if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last).count() > 100)
             {
                 current_frame++;
-                if (current_frame == sprites.size())
+                if (current_frame == (int) sprites.size())
                 {
                     current_frame = 0;
                 }

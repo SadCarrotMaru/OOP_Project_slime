@@ -1,7 +1,12 @@
 #include "game.h"
-
-Game::Game()
+Game::Game() : boss(8,"boss")
 {
+    if (!music.openFromFile("assets/8bitmusic.mp3"))
+    {
+        throw FileError("music loading error");
+    }
+    music.setLoop(true);
+    music.play();
     xr = yr = 3;
     for (int i = 1; i <= 6; i++)
     {
@@ -66,6 +71,11 @@ void Game::pollEvents()
 
 void Game::updatePlayer()
 {
+    if (collision::collisionsprites(this->player.getrect(), this->current_room.get_heart()))
+    {
+        this->player.getdamage(-10);
+        this->current_room.setheart(false);
+    }
 	int temp = this->player.update(this->current_room.getRectangle(), &(this->current_room));
     if (this->current_room.get_level_clear() == true)
     {
@@ -160,12 +170,15 @@ void Game::updateProjectiles()
 }
 void Game::handle_enemy()
 {
-    if (entities.size() == 1) this->current_room.set_level_clear(true);
+    if (entities.size() == 1)
+    {
+        this->current_room.set_level_clear(true);
+        
+    }
     for(int i=1 ; i< (int)this->entities.size();i++)
     {
         enemy* en =  dynamic_cast<enemy*>(this->entities[i]);
         en->movement_update(this->player.getModelCoord(), this->enemy_projectiles, this->current_room.getRectangle(), this->rh);
-
     }
 }
 void Game::render_enemy()
@@ -195,6 +208,10 @@ void Game::checkcolliders()
                         if (ptr->getHP() <= 0)
                         {
                             this->entities.erase(this->entities.begin()+z);
+                            if (this->entities.size() == 1)
+                            {
+                                this->current_room.setheart(true);
+                            }
                             //delete ptr;
                         }
                         break;
@@ -203,7 +220,7 @@ void Game::checkcolliders()
             }
             if (collision::collisionsprites(ptr->getrect(), this->player.getrect()))
             {
-                this->player.getdamage(10);
+                this->player.getdamage(5);
             }
         }
         else
@@ -269,6 +286,10 @@ void Game::render()
     }
     this->render_enemy();
 	this->player.render(this->window);
+    //this->boss.draw(this->window, 300, 300);
+    this->window->setView(this->window->getDefaultView());
+    this->GUI_.update_GUI(this->player.getHP(), this->window);
+    this->setView();
 	this->window->display();
 }
 
@@ -371,48 +392,6 @@ void Game::create_rooms()
 }
 
 
-
-
-
-
-Game::Game (const Game& other)
-{
-    this->videoMode = other.videoMode;
-    this->view = other.view;
-    this->endGame = other.endGame;
-	this->window = new sf::RenderWindow;
-    this->window = other.window;
-    this->possible_rooms = other.possible_rooms;
-    this->current_room = other.current_room;
-    this->sfmlEvent = other.sfmlEvent;
-    this->player = other.player;
-    this->font = other.font;
-    this->guiText = other.guiText;
-    this->endGameText = other.endGameText;
-    this->xr = other.xr;
-    this->yr = other.yr;
-}
-Game& Game::operator=(const Game& other)
-{
-    if (this != &other)
-    {
-        this->videoMode = other.videoMode;
-        this->view = other.view;
-        this->endGame = other.endGame;
-		this->window = new sf::RenderWindow;
-        this->window = other.window;
-        this->possible_rooms = other.possible_rooms;
-        this->current_room = other.current_room;
-        this->sfmlEvent = other.sfmlEvent;
-        this->player = other.player;
-        this->font = other.font;
-        this->guiText = other.guiText;
-        this->endGameText = other.endGameText;
-        this->xr = other.xr;
-        this->yr = other.yr;
-    }
-    return *this;
-}
 
 // << operator
 std::ostream& operator<<(std::ostream& out, const Game& game)

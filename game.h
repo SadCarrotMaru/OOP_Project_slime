@@ -9,10 +9,15 @@
 
 #include "player.h"
 #include "game_construction.hpp"
+#include "player_gui.hpp"
+#include "animation.hpp"
 
 class Game
 {
 private:
+	GUI GUI_;
+	animation boss;
+	static sf::Music music;
 	sf::VideoMode videoMode;
 	sf::View view;
 	bool endGame;
@@ -59,10 +64,6 @@ public:
     void handle_enemy();
     void render_enemy();
 
-    ///copy constructor
-    Game(const Game& other);
-    ///copy assignment operator
-    Game& operator=(const Game& other);
     friend std::ostream& operator<<(std::ostream& out, const Game& game);
 
 };

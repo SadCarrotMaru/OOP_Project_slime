@@ -8,7 +8,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include "projectile.h"
 class effect
@@ -191,7 +190,9 @@ class room
         bool door_directions[4]={false,false,false,false};
 
         sf::Texture background;
-        bool level_cleared = false;
+        bool level_cleared = false, is_dropped_heart = false;
+        sf::Texture heart;
+        sf::Sprite dropped_heart;
     public:
         room() = default;
         room(const std::string& background_location,const std::string &directions,const float pixel_error_x_,const float pixel_error_y_)
@@ -220,6 +221,35 @@ class room
         inline sf::FloatRect getBackgroundRectangle() const
         {
             return sprite.getLocalBounds();
+        }
+        inline sf::FloatRect get_heart() const
+        {
+            if(is_dropped_heart) return dropped_heart.getGlobalBounds();
+            return sf::FloatRect(0.0f,0.0f,0.0f,0.0f);
+        }
+        void setheart(bool value_)
+        {
+            if (value_ == true)
+            {
+                std::random_device rd;
+                std::mt19937 mt(rd());
+                std::uniform_int_distribution<int> dist(0, 2);
+                auto is_dropped = dist(mt);
+                if (is_dropped == 1)
+                {
+                    is_dropped_heart = true;
+                    if (!heart.loadFromFile("assets/full_hp.png"))
+                    {
+                        throw FileError("dropped heart png failed");
+                    }
+                    dropped_heart.setTexture(heart);
+                    sf::Vector2f pos;
+                    pos.x = this->rectangle.left + this->rectangle.width / 2;
+                    pos.y = this->rectangle.top + this->rectangle.height / 2;
+                    dropped_heart.setPosition(pos);
+                }
+            }
+            else is_dropped_heart = value_;
         }
         inline sf::FloatRect get_north() const
         {
@@ -289,7 +319,10 @@ class room
             if(door_directions[1]) target->draw(door_sprite_south);
             if(door_directions[2]) target->draw(door_sprite_east);
             if(door_directions[3]) target->draw(door_sprite_west);
-
+            if (is_dropped_heart)
+            {
+                target->draw(dropped_heart);
+            }
         }
         void create_enemy(sf::FloatRect redzone, const resource_holder &rh)
         {
@@ -378,7 +411,10 @@ class room
             pixel_error_y(other.pixel_error_y),
             door_directions{other.door_directions[0],other.door_directions[1],other.door_directions[2],other.door_directions[3]}, 
             background(other.background), 
-            level_cleared(other.level_cleared)
+            level_cleared(other.level_cleared),
+            is_dropped_heart(other.is_dropped_heart),
+            heart(other.heart),
+            dropped_heart(other.dropped_heart)
         {
             /// copy constructor called
         }
@@ -400,6 +436,9 @@ class room
             this->door_sprite_east = room_to_copy.door_sprite_east;
             this->door_sprite_west = room_to_copy.door_sprite_west;
             this->level_cleared = room_to_copy.level_cleared;
+            this->is_dropped_heart = room_to_copy.is_dropped_heart;
+            this->heart = room_to_copy.heart;
+            this->dropped_heart = room_to_copy.dropped_heart;
             return *this;
         }
         ///overload << operator

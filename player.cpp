@@ -7,6 +7,8 @@ void Player::getdamage(const int damagetaken)
 	{
 		this->HP -= damagetaken;
 		last = std::chrono::high_resolution_clock::now();
+		if (this->HP > this->MAXHP)
+			this->HP = this->MAXHP;
 	}
 }
 void Player::initVariables()

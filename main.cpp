@@ -2,7 +2,7 @@
 //#include <SFML/Graphics.hpp>
 //#include <chrono>
 #include <thread>
-#include "game.h"
+#include "game.hpp"
 
 #ifdef __linux__
 #include <X11/Xlib.h>
@@ -12,7 +12,7 @@ int main() {
 #ifdef __linux__
     XInitThreads();
 #endif
-    Game main_game;
+    auto &main_game = Game::start_game();
     main_game.create_rooms();
     while (main_game.running())
     {

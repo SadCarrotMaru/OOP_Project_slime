@@ -145,8 +145,7 @@ void Game::handle_enemy()
     }
     for (int i = 1; i < (int)this->entities.size(); i++)
     {
-        enemy* en;
-        if (en = dynamic_cast<enemy*>(this->entities[i]); en != nullptr)
+        if (enemy* en = dynamic_cast<enemy*>(this->entities[i]); en != nullptr)
             en->movement_update(this->player.getModelCoord(), this->enemy_projectiles, this->current_room.getRectangle(), this->rh);
     }
 }
@@ -154,8 +153,7 @@ void Game::render_enemy()
 {
     for (int i = 1; i < (int)this->entities.size(); i++)
     {
-        enemy* en;
-        if (en = dynamic_cast<enemy*>(this->entities[i]); en != nullptr)
+        if (enemy* en = dynamic_cast<enemy*>(this->entities[i]); en != nullptr)
             en->render(this->window);
     }
 }

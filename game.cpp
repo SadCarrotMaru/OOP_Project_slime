@@ -1,158 +1,28 @@
-//#include "game.h"
-#include<iostream>
-#include<ctime>
-#include<vector>
-#include<sstream>
-#include <thread>
-#include <chrono>
+#include "game.h"
 
-#include "player.h"
-#include "game_construction.hpp"
-#include "player_gui.hpp"
-#include "animation.hpp"
-
-class Game
-{
-private:
-    Game() : boss(8, "boss")
-    {
-        this->dungeons_left = 0;
-        if (!music.openFromFile("assets/8bitmusic.mp3"))
-        {
-            throw FileError("music loading error");
-        }
-        music.setLoop(true);
-        music.play();
-        xr = yr = 3;
-        for (int i = 1; i <= 6; i++)
-        {
-            for (int j = 1; j <= 6; j++)
-            {
-                this->visited[i][j] = false;
-            }
-        }
-        this->possible_rooms.clear();
-        player.setPosition(400, 470);
-        this->entities.push_back(&player);
-        ///init window
-        this->videoMode = sf::VideoMode(900, 900);
-        this->window = new sf::RenderWindow(this->videoMode, "Unknown Project", sf::Style::Close | sf::Style::Titlebar);
-        this->window->setFramerateLimit(60);
-        ///final init
-        this->endGame = false;
-    }
-    GUI GUI_;
-    animation boss;
-    static sf::Music music;
-    sf::VideoMode videoMode;
-    sf::View view;
-    bool endGame;
-    sf::RenderWindow* window;
-    std::vector<room>possible_rooms;
-    std::vector<projectile>ally_projectiles;
-    std::vector<projectile>enemy_projectiles;
-    room current_room;
-    resource_holder rh;
-    //room layout
-    room roomlayout[7][7];
-    bool visited[7][7];
-    int xr, yr;
-    sf::Event sfmlEvent{};
-    std::vector<entity*>entities;
-    Player player;
-    int dungeons_left;
-
-    sf::Font font;
-    sf::Text guiText;
-    sf::Text endGameText;
-
-public:
-    //Constructors and Destructors
-    Game(const Game&) = delete;
-    Game& operator=(const Game&) = delete;
-    static Game& start_game()
-    {
-        static Game game_;
-        return game_;
-    }
-    ///Accessors
-
-    //Functions
-    bool running() const;
-    void pollEvents();
-    void update();
-    //void add_projectile(const projectile& projectile_);
-
-    void updatePlayer();
-    void setView();
-
-    void render();
-    void checkcolliders();
-    void updateProjectiles();
-
-    void fill_dungeon(int x, int y);
-    void create_rooms();
-    void generate_dungeon();
-    void handle_enemy();
-    void render_enemy();
-
-    friend std::ostream& operator<<(std::ostream& out, const Game& game);
-
-};
-/*
-Game::Game() : boss(8, "boss")
-{
-    this->dungeons_left = 0;
-    if (!music.openFromFile("assets/8bitmusic.mp3"))
-    {
-        throw FileError("music loading error");
-    }
-    music.setLoop(true);
-    music.play();
-    xr = yr = 3;
-    for (int i = 1; i <= 6; i++)
-    {
-        for (int j = 1; j <= 6; j++)
-        {
-            this->visited[i][j] = false;
-        }
-    }
-	this->possible_rooms.clear();
-    player.setPosition(400,470);
-    this->entities.push_back(&player);
-	///init window
-    this->videoMode = sf::VideoMode(900, 900);
-    this->window = new sf::RenderWindow(this->videoMode, "Unknown Project", sf::Style::Close | sf::Style::Titlebar);
-    this->window->setFramerateLimit(60);
-    ///final init
-    this->endGame = false;
-}
-*/
 bool Game::running() const
 {
-	return this->window->isOpen();
+    return this->window->isOpen();
 }
 void Game::pollEvents()
 {
-	while (this->window->pollEvent(this->sfmlEvent))
-	{
-		switch (this->sfmlEvent.type)
-		{
-		case sf::Event::Closed:
-			this->window->close();
-			break;
-		case sf::Event::KeyPressed:
-			//this->player.update(this->window);
-			if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
-			if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->dungeons_left;
+    while (this->window->pollEvent(this->sfmlEvent))
+    {
+        switch (this->sfmlEvent.type)
+        {
+        case sf::Event::Closed:
+            this->window->close();
+            break;
+        case sf::Event::KeyPressed:
+            if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
+            if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->dungeons_left;
             //if (this->sfmlEvent.key.code == sf::Keyboard::G) std::cout << ;
-			break;
+            break;
         case::sf::Event::MouseButtonPressed:
             if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)
             {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
                 auto mousePosF = (*window).mapPixelToCoords(mousePos);
-               // sf::Vector2f mousePosF(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
                 sf::Vector2f playerPos = this->player.getModelCoord();
                 sf::Vector2f direction = mousePosF - playerPos;
                 auto length = float(sqrt((direction.x * direction.x) + (direction.y * direction.y)));
@@ -161,10 +31,10 @@ void Game::pollEvents()
                 ally_projectiles.push_back(projectile("allied", direction, 15.0f, mousePosF, playerPos, rh));
             }
             break;
-		default:
-			break;
-		}
-	}
+        default:
+            break;
+        }
+    }
 }
 
 void Game::updatePlayer()
@@ -174,7 +44,7 @@ void Game::updatePlayer()
         this->player.getdamage(-10);
         this->current_room.setheart(false);
     }
-	int temp = this->player.update(this->current_room.getRectangle(), &(this->current_room));
+    int temp = this->player.update(this->current_room.getRectangle(), &(this->current_room));
     if (this->current_room.get_level_clear() == true)
     {
         this->roomlayout[xr][yr].set_level_clear(true);
@@ -205,29 +75,29 @@ void Game::updatePlayer()
             else if (temp == 2) xx = this->current_room.get_west().left + this->current_room.get_west().width + 150, yy = this->current_room.get_west().top;
             else xx = this->current_room.get_east().left - 150, yy = this->current_room.get_east().top;
             this->ally_projectiles.clear();
-            this->enemy_projectiles.clear();    
+            this->enemy_projectiles.clear();
             this->player.setPosition(xx, yy);
             using namespace std::chrono;
             using namespace std::this_thread;
             sleep_for(nanoseconds(10));
         }
     }
-	if (this->player.getHp() <= 0)
-		this->endGame = true;
+    if (this->player.getHp() <= 0)
+        this->endGame = true;
 }
 
 void Game::setView()
 {
-	sf::Vector2f center_map;
-	center_map.x = (this->current_room.getBackgroundRectangle().left + this->current_room.getBackgroundRectangle().width) / 2;
-	center_map.y = (this->current_room.getBackgroundRectangle().top + this->current_room.getBackgroundRectangle().height) / 2;
-	
+    sf::Vector2f center_map;
+    center_map.x = (this->current_room.getBackgroundRectangle().left + this->current_room.getBackgroundRectangle().width) / 2;
+    center_map.y = (this->current_room.getBackgroundRectangle().top + this->current_room.getBackgroundRectangle().height) / 2;
+
     if (this->current_room.getBackgroundRectangle().width > 1620)
     {
         this->view.setCenter(this->player.getModelCoord());
         this->view.zoom(1.3f);
         this->window->setView(this->view);
-        this->view.zoom((float)(1/1.3f));
+        this->view.zoom((float)(1 / 1.3f));
     }
     else
     {
@@ -236,7 +106,7 @@ void Game::setView()
         this->window->setView(this->view);
         this->view.zoom((float)(1 / 1.6f));
     }
- }
+}
 void Game::updateProjectiles()
 {
     if (!this->ally_projectiles.empty())
@@ -271,25 +141,27 @@ void Game::handle_enemy()
     if (entities.size() == 1)
     {
         this->current_room.set_level_clear(true);
-        
+
     }
-    for(int i=1 ; i< (int)this->entities.size();i++)
+    for (int i = 1; i < (int)this->entities.size(); i++)
     {
-        enemy* en =  dynamic_cast<enemy*>(this->entities[i]);
-        en->movement_update(this->player.getModelCoord(), this->enemy_projectiles, this->current_room.getRectangle(), this->rh);
+        enemy* en;
+        if (en = dynamic_cast<enemy*>(this->entities[i]); en != nullptr)
+            en->movement_update(this->player.getModelCoord(), this->enemy_projectiles, this->current_room.getRectangle(), this->rh);
     }
 }
 void Game::render_enemy()
 {
-    for (int i=1; i<(int)this->entities.size() ; i++)
+    for (int i = 1; i < (int)this->entities.size(); i++)
     {
-        enemy* en = dynamic_cast<enemy*>(this->entities[i]);
-        en->render(this->window);
+        enemy* en;
+        if (en = dynamic_cast<enemy*>(this->entities[i]); en != nullptr)
+            en->render(this->window);
     }
 }
 void Game::checkcolliders()
 {
-    for (int z = 0; z<(int)this->entities.size();z++)
+    for (int z = 0; z < (int)this->entities.size(); z++)
     {
         auto ptr = this->entities[z];
         if (ptr == dynamic_cast<enemy*>(ptr))
@@ -299,13 +171,13 @@ void Game::checkcolliders()
                 for (int i = 0; i < (int)this->ally_projectiles.size(); i++)
                 {
                     auto projectile_ = &(this->ally_projectiles[i]);
-                    if (collision::collisionsprites(ptr->getrect(), projectile_ -> get_projectile()))
+                    if (collision::collisionsprites(ptr->getrect(), projectile_->get_projectile()))
                     {
                         ptr->getdamage(10);
                         this->ally_projectiles.erase(this->ally_projectiles.begin() + i);
                         if (ptr->getHP() <= 0)
                         {
-                            this->entities.erase(this->entities.begin()+z);
+                            this->entities.erase(this->entities.begin() + z);
                             if (this->entities.size() == 1)
                             {
                                 this->roomlayout[this->xr][this->yr].setheart(true);
@@ -358,16 +230,16 @@ void Game::update()
         this->handle_enemy();
         this->checkcolliders();
     }
-    if(this->endGame)
+    if (this->endGame)
     {
         this->window->close();
     }
 }
 void Game::render()
 {
-	this->window->clear();
+    this->window->clear();
     this->update();
-	this->current_room.display_background(this->window);
+    this->current_room.display_background(this->window);
     if (!this->ally_projectiles.empty())
     {
         for (int i = 0; i < (int)this->ally_projectiles.size(); i++)
@@ -385,12 +257,12 @@ void Game::render()
         }
     }
     this->render_enemy();
-	this->player.render(this->window);
+    this->player.render(this->window);
     //this->boss.draw(this->window, 300, 300);
     this->window->setView(this->window->getDefaultView());
     this->GUI_.update_GUI(this->player.getHP(), this->window);
     this->setView();
-	this->window->display();
+    this->window->display();
 }
 
 
@@ -414,7 +286,7 @@ void Game::fill_dungeon(int x, int y)
             tempdoors[i] = this->roomlayout[x][y].getdoor(i);
         this->roomlayout[x][y] = this->possible_rooms[for_room];
         for (auto i = 0; i < 4; i++)
-            if(tempdoors[i] == true) this->roomlayout[x][y].set_door(i);
+            if (tempdoors[i] == true) this->roomlayout[x][y].set_door(i);
     }
     const int dx[] = { -1,1,0,0 };
     const int dy[] = { 0,0,1,-1 };
@@ -458,7 +330,7 @@ void Game::fill_dungeon(int x, int y)
 
 void Game::generate_dungeon()
 {
-    this->roomlayout[3][3]=this->possible_rooms[0];
+    this->roomlayout[3][3] = this->possible_rooms[0];
     this->roomlayout[3][3].set_level_clear(true);
     this->fill_dungeon(3, 3);
     this->current_room = this->roomlayout[3][3];
@@ -485,10 +357,10 @@ void Game::generate_dungeon()
 
 void Game::create_rooms()
 {
-	room room1("assets/background1.png", "0000", 180, 240);
-	this->possible_rooms.push_back(room1);
-	room room2("assets/background2.png", "0000", 180, 240);
-	this->possible_rooms.push_back(room2);
+    room room1("assets/background1.png", "0000", 180, 240);
+    this->possible_rooms.push_back(room1);
+    room room2("assets/background2.png", "0000", 180, 240);
+    this->possible_rooms.push_back(room2);
     this->generate_dungeon();
 }
 

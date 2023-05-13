@@ -2,7 +2,7 @@
 //#include <SFML/Graphics.hpp>
 //#include <chrono>
 #include <thread>
-#include "game.hpp"
+#include "game.h"
 
 #ifdef __linux__
 #include <X11/Xlib.h>

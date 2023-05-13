@@ -12,18 +12,13 @@ class animation
         {
             sf::Texture empty_text;
             sf::Sprite empty_sprite;
-            textures.assign(8, empty_text);
-            sprites.assign(8, empty_sprite);
+            textures.assign(nr_of_frames, empty_text);
+            sprites.assign(nr_of_frames, empty_sprite);
             current_frame = 0;
-            std::string formed_path = "assets/" + name + "/" + name + "0.png";
+            std::string base_path = "assets/" + name + "/" + name, formed_path;
             for (int i = 1 ; i<= nr_of_frames ; i++)
             {
-                formed_path.pop_back();
-                formed_path.pop_back();
-                formed_path.pop_back();
-                formed_path.pop_back();
-                formed_path.pop_back();
-                formed_path += std::to_string(i) + ".png";
+                formed_path = base_path + std::to_string(i) + ".png";
                 if (!textures[i-1].loadFromFile(formed_path)) {
                     throw FileError("loading texture of class animation failed");
                 }

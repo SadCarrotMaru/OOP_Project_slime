@@ -5,7 +5,8 @@ class GUI
         //sf::RectangleShape hp_bar;
         sf::Texture hp_full_heart, hp_half_heart, hp_zero_heart;
         std::vector<sf::Sprite>hearts;
-	public:
+        const int hp_hearts = 10, heart_value = 10;
+        public:
         GUI()
         {
             if (!hp_full_heart.loadFromFile("assets/full_hp.png"))
@@ -20,7 +21,7 @@ class GUI
             {
                 throw FileError("loading hp_zero_heart failed");
             }
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < hp_hearts; i++)
             {
                 sf::Sprite temp;
                 temp.setTexture(hp_full_heart);
@@ -39,17 +40,17 @@ class GUI
         }
         void update_GUI(int current_hp, sf::RenderTarget * target)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < hp_hearts; i++)
             {
-                if (current_hp >= 10)
+                if (current_hp >= heart_value)
                 {
                     hearts[i].setTexture(hp_full_heart);
-                    current_hp -= 10;
+                    current_hp -= heart_value;
                 }
-                else if (current_hp == 5)
+                else if (current_hp == heart_value / 2)
                 {
                     hearts[i].setTexture(hp_half_heart);
-                    current_hp -= 5;
+                    current_hp -= heart_value / 2;
                 }
                 else
                 {

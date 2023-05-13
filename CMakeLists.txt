@@ -79,6 +79,7 @@ FetchContent_MakeAvailable(SFML)
 set_custom_stdlib_and_sanitizers(sfml-system false)
 set_custom_stdlib_and_sanitizers(sfml-window false)
 set_custom_stdlib_and_sanitizers(sfml-graphics false)
+set_custom_stdlib_and_sanitizers(sfml-audio false)
 
 ###############################################################################
 
@@ -93,7 +94,7 @@ endif()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp player.cpp game_construction.hpp game.hpp player_gui.hpp projectile.h projectile.cpp projectile.cpp animation.hpp)
+add_executable(${PROJECT_NAME} main.cpp player.cpp game_construction.hpp player_gui.hpp projectile.cpp projectile.cpp animation.hpp game.cpp)
 
 ###############################################################################
 

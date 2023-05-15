@@ -70,7 +70,7 @@ class enemy : public entity
         std::chrono::high_resolution_clock::time_point last = std::chrono::high_resolution_clock::now();
     public:
 
-        enemy(const int maxhp, const std::string &name) : entity(maxhp), enemy_name(name) {};
+        enemy(const int maxhp, const std::string& name) : entity(maxhp), enemy_name(name) { this->speed = 0.0f; this->sign1 = this->sign2 = 0; };
         virtual void movement_update(const sf::Vector2f player_pos, std::vector<projectile>& enemy_projectiles, sf::FloatRect roomwall, resource_holder& rh) { std::cout << "test"; };
         virtual ~enemy() = default; 
         void getdamage (const int damagetaken) override
@@ -89,7 +89,7 @@ class enemy : public entity
         {
             target->draw(this->model);
         }
-        virtual  entity* clone() const { return new enemy(*this); }
+        virtual  entity* clone() const override { return new enemy(*this); }
 };
 class fatguy : public enemy
 {

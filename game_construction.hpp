@@ -93,17 +93,17 @@ class enemy : public entity
 };
 class fatguy : public enemy
 {
-    public:
-        fatguy(const std::string &name, const sf::Vector2f position, const int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
-        {
-            this->speed = 0.4f;
-            this->model.setTexture(rh.fat_guy);
-            this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
-            this->model.setPosition(position);
-            sign1 = sign11;
-            sign2 = sign22;
-        }
-        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh) override
+public:
+    fatguy(const std::string& name, const sf::Vector2f position, const int maxhp, const resource_holder& rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
+    {
+        this->speed = 0.4f;
+        this->model.setTexture(rh.fat_guy);
+        this->model.setOrigin(this->model.getGlobalBounds().width / 2, this->model.getGlobalBounds().height / 2);
+        this->model.setPosition(position);
+        sign1 = sign11;
+        sign2 = sign22;
+    }
+    void movement_update(const sf::Vector2f player_pos, std::vector<projectile>& enemy_projectiles, [[maybe_unused]]sf::FloatRect roomwall, resource_holder& rh) override
         {
             //move slowly towards player
             sf::Vector2f direction = player_pos - this->model.getPosition();
@@ -123,17 +123,17 @@ class fatguy : public enemy
 };
 class bat : public enemy
 {
-    public:
-        bat(const std::string &name, const sf::Vector2f position, const int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
-        {
-            this->speed = 1.5f;
-            this->model.setTexture(rh.bat_texture);
-            this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
-            this->model.setPosition(position);
-            sign1 = sign11;
-            sign2 = sign22;
-        }
-        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh) override
+public:
+    bat(const std::string& name, const sf::Vector2f position, const int maxhp, const resource_holder& rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
+    {
+        this->speed = 1.5f;
+        this->model.setTexture(rh.bat_texture);
+        this->model.setOrigin(this->model.getGlobalBounds().width / 2, this->model.getGlobalBounds().height / 2);
+        this->model.setPosition(position);
+        sign1 = sign11;
+        sign2 = sign22;
+    }
+    void movement_update(const sf::Vector2f player_pos, [[maybe_unused]] std::vector<projectile>& enemy_projectiles, sf::FloatRect roomwall, [[maybe_unused]] resource_holder& rh) override
         {
             this->model.move(this->speed*10*sign1, this->speed*10*sign2);
             //collision with wall
@@ -147,17 +147,17 @@ class bat : public enemy
 };
 class spider : public enemy
 {
-    public:
-        spider(const std::string &name, const sf::Vector2f position, const int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
-        {
-            this->speed = 6.0f;
-            this->model.setTexture(rh.spider_texture);
-            this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
-            this->model.setPosition(position);
-            sign1 = sign11;
-            sign2 = sign22;
-        }
-        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh) override
+public:
+    spider(const std::string& name, const sf::Vector2f position, const int maxhp, const resource_holder& rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
+    {
+        this->speed = 6.0f;
+        this->model.setTexture(rh.spider_texture);
+        this->model.setOrigin(this->model.getGlobalBounds().width / 2, this->model.getGlobalBounds().height / 2);
+        this->model.setPosition(position);
+        sign1 = sign11;
+        sign2 = sign22;
+    }
+    void movement_update(const sf::Vector2f player_pos, [[maybe_unused]] std::vector<projectile>& enemy_projectiles, [[maybe_unused]]sf::FloatRect roomwall, [[maybe_unused]]resource_holder& rh) override
         {
             // sprint towards player (mach type of speed)
             sf::Vector2f direction = player_pos - this->model.getPosition();

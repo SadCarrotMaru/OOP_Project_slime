@@ -46,12 +46,12 @@ class entity
         int HP, MAXHP;
         //weapon weapon_held;
         effect effect_applied_on_entity;
-    public:
         entity(int hp_ = 100)
         {
             MAXHP = hp_;
             HP = MAXHP;
         }
+    public:
         virtual ~entity() = default;
         virtual void getdamage(const int damagetaken) = 0;
         virtual const sf::FloatRect getrect() const = 0;
@@ -61,7 +61,7 @@ class entity
 };
 class enemy : public entity
 {
-    private:
+    protected:
         //bool phase2 = false;
         sf::Sprite model;
         std::string enemy_name;
@@ -69,71 +69,10 @@ class enemy : public entity
         int sign1,sign2;
         std::chrono::high_resolution_clock::time_point last = std::chrono::high_resolution_clock::now();
     public:
-        enemy(const std::string &name, const sf::Vector2f position, int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : entity(maxhp), enemy_name(name)
-        {
-            if(enemy_name == "bat")
-            {
-                this->speed = 1.5f;
-                this->model.setTexture(rh.bat_texture);
-                this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
-                this->model.setPosition(position);
-            }
-            else if(enemy_name == "spider")
-            {
-                this->speed = 6.0f;
-                this->model.setTexture(rh.spider_texture);
-                this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
-                this->model.setPosition(position);
-            }
-            else if(enemy_name == "fat_guy")
-            {
-                this->speed = 0.4f;
-                this->model.setTexture(rh.fat_guy);
-                this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
-                this->model.setPosition(position);
-            }
-            sign1 = sign11;
-            sign2 = sign22;
-        };
-        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh)
-        {
-            if(enemy_name == "fat_guy")
-            {
-                //move slowly towards player
-                sf::Vector2f direction = player_pos - this->model.getPosition();
-                float length = float(sqrt(pow(direction.x,2) + pow(direction.y,2)));
-                direction.x /= length;
-                direction.y /= length;
-                this->model.move(direction * this->speed);
-                //shoot projectile every 1.5 seconds
-                std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
-                if(std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 1.5)
-                {
-                    last = now;
-                    enemy_projectiles.push_back(projectile("enemy", direction, 24.0f, player_pos, this->model.getPosition(), rh));
-                }
-            }
-            else if(enemy_name == "spider")
-            {
-                // sprint towards player (mach type of speed)
-                sf::Vector2f direction = player_pos - this->model.getPosition();
-                float length = sqrt(pow(direction.x,2) + pow(direction.y,2));
-                direction.x /= length;
-                direction.y /= length;
-                this->model.move(direction * this->speed);
-            }
-            else if(enemy_name == "bat")
-            {
-                this->model.move(this->speed*10*sign1, this->speed*10*sign2);
-                //collision with wall
-               // std::cout<<this->model.getGlobalBounds().left<<" "<<this->model.getGlobalBounds().top<<" "<< this->model.getGlobalBounds().width<<" "<<this->model.getGlobalBounds().height<<std::endl;
-                if (this->model.getGlobalBounds().left <= roomwall.left) sign1=1;
-                if (this->model.getGlobalBounds().left + this->model.getGlobalBounds().width >= roomwall.left + roomwall.width) sign1=-1;
-                if (this->model.getGlobalBounds().top <= roomwall.top) sign2=1;
-                if (this->model.getGlobalBounds().top + this->model.getGlobalBounds().height >= roomwall.top + roomwall.height) sign2=-1;
-            }
-        }
-        ~enemy() = default; 
+
+        enemy(const int maxhp, const std::string &name) : entity(maxhp), enemy_name(name) {};
+        virtual void movement_update(const sf::Vector2f player_pos, std::vector<projectile>& enemy_projectiles, sf::FloatRect roomwall, resource_holder& rh) { std::cout << "test"; };
+        virtual ~enemy() = default; 
         void getdamage (const int damagetaken) override
         {
             this->HP -= damagetaken;
@@ -150,7 +89,84 @@ class enemy : public entity
         {
             target->draw(this->model);
         }
-        entity* clone() const override { return new enemy(*this);}
+        virtual  entity* clone() const { return new enemy(*this); }
+};
+class fatguy : public enemy
+{
+    public:
+        fatguy(const std::string &name, const sf::Vector2f position, const int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
+        {
+            this->speed = 0.4f;
+            this->model.setTexture(rh.fat_guy);
+            this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
+            this->model.setPosition(position);
+            sign1 = sign11;
+            sign2 = sign22;
+        }
+        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh) override
+        {
+            //move slowly towards player
+            sf::Vector2f direction = player_pos - this->model.getPosition();
+            float length = float(sqrt(pow(direction.x,2) + pow(direction.y,2)));
+            direction.x /= length;
+            direction.y /= length;
+            this->model.move(direction * this->speed);
+            //shoot projectile every 1.5 seconds
+            std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+            if(std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 1.5)
+            {
+                last = now;
+                enemy_projectiles.push_back(projectile("enemy", direction, 24.0f, player_pos, this->model.getPosition(), rh));
+            }
+        }
+        entity* clone() const override  { return new fatguy(*this);}
+};
+class bat : public enemy
+{
+    public:
+        bat(const std::string &name, const sf::Vector2f position, const int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
+        {
+            this->speed = 1.5f;
+            this->model.setTexture(rh.bat_texture);
+            this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
+            this->model.setPosition(position);
+            sign1 = sign11;
+            sign2 = sign22;
+        }
+        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh) override
+        {
+            this->model.move(this->speed*10*sign1, this->speed*10*sign2);
+            //collision with wall
+           // std::cout<<this->model.getGlobalBounds().left<<" "<<this->model.getGlobalBounds().top<<" "<< this->model.getGlobalBounds().width<<" "<<this->model.getGlobalBounds().height<<std::endl;
+            if (this->model.getGlobalBounds().left <= roomwall.left) sign1=1;
+            if (this->model.getGlobalBounds().left + this->model.getGlobalBounds().width >= roomwall.left + roomwall.width) sign1=-1;
+            if (this->model.getGlobalBounds().top <= roomwall.top) sign2=1;
+            if (this->model.getGlobalBounds().top + this->model.getGlobalBounds().height >= roomwall.top + roomwall.height) sign2=-1;
+        }
+        entity* clone() const override  { return new bat(*this);}
+};
+class spider : public enemy
+{
+    public:
+        spider(const std::string &name, const sf::Vector2f position, const int maxhp, const resource_holder &rh, int sign11 = 1, int sign22 = 1) : enemy(maxhp, name)
+        {
+            this->speed = 6.0f;
+            this->model.setTexture(rh.spider_texture);
+            this->model.setOrigin(this->model.getGlobalBounds().width/2, this->model.getGlobalBounds().height/2);
+            this->model.setPosition(position);
+            sign1 = sign11;
+            sign2 = sign22;
+        }
+        void movement_update(const sf::Vector2f player_pos, std::vector<projectile> &enemy_projectiles,sf::FloatRect roomwall,resource_holder &rh) override
+        {
+            // sprint towards player (mach type of speed)
+            sf::Vector2f direction = player_pos - this->model.getPosition();
+            float length = sqrt(pow(direction.x, 2) + pow(direction.y, 2));
+            direction.x /= length;
+            direction.y /= length;
+            this->model.move(direction * this->speed);
+        }
+        entity* clone() const override  { return new spider(*this);}
 };
 class misc
 {
@@ -363,12 +379,12 @@ class room
                     {
                         if(type==0)
                         {
-                            std::unique_ptr<enemy> temp(new enemy("fat_guy", tempvec, 150, rh));
+                            std::unique_ptr<enemy> temp( std::make_unique<fatguy>("fat_guy", tempvec, 150, rh));
                             this->enemies.push_back(std::move(temp));
                         }
                         else if(type==1)
                         {
-                            std::unique_ptr<enemy> temp(new enemy("spider", tempvec, 60, rh));
+                            std::unique_ptr<enemy> temp(std::make_unique<spider>("spider", tempvec, 60, rh));
                             this->enemies.push_back(std::move(temp));
                         }
                         else
@@ -377,7 +393,7 @@ class room
                             int sign1 = dist5(mt), sign2 = dist5(mt);
                             if(sign1 == 0) sign1--;
                             if(sign2 == 0) sign2--;
-                            std::unique_ptr<enemy> temp(new enemy("bat", tempvec, 20, rh, sign1, sign2));
+                            std::unique_ptr<enemy> temp(std::make_unique<bat>("bat", tempvec, 20, rh, sign1, sign2));
                             this->enemies.push_back(std::move(temp));
                         }
                         break;
@@ -386,14 +402,14 @@ class room
             }
         }
         //get enemies
-        const std::vector<enemy>& getEnemies()
+        const std::vector<enemy*>& getEnemies()
         {
-            static std::vector<enemy> temp;
+            static std::vector<enemy*> temp;
             temp.clear();
             while(this->enemies.size()>0)
             {
                 enemy* ptr = this->enemies[0].get();
-                temp.push_back(*ptr);
+                temp.push_back(dynamic_cast<enemy*>(ptr->clone()));
                 this->enemies.erase(this->enemies.begin());
             }
             this->enemies.clear();

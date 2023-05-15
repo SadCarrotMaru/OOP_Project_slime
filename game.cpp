@@ -63,11 +63,11 @@ void Game::updatePlayer()
             if (this->current_room.get_level_clear() == false)
             {
                 this->current_room.create_enemy(this->player.getrect(), rh);
-                std::vector<enemy> tempenemi;
+                std::vector<enemy*> tempenemi;
                 tempenemi.clear();
                 tempenemi = this->current_room.getEnemies();
                 for (auto i : tempenemi)
-                    this->entities.push_back(i.clone());
+                    this->entities.push_back(i);
             }
             float xx, yy;
             if (temp == 0) xx = this->current_room.get_south().left, yy = this->current_room.get_south().top - 150;

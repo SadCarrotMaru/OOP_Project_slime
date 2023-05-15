@@ -133,7 +133,7 @@ public:
         sign1 = sign11;
         sign2 = sign22;
     }
-    void movement_update(const sf::Vector2f player_pos, [[maybe_unused]] std::vector<projectile>& enemy_projectiles, sf::FloatRect roomwall, [[maybe_unused]] resource_holder& rh) override
+    void movement_update([[maybe_unused]] const sf::Vector2f player_pos, [[maybe_unused]] std::vector<projectile>& enemy_projectiles, sf::FloatRect roomwall, [[maybe_unused]] resource_holder& rh) override
         {
             this->model.move(this->speed*10*sign1, this->speed*10*sign2);
             //collision with wall

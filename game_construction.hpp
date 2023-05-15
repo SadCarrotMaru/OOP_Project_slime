@@ -8,8 +8,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Network.hpp>
+#include <SFML/Network.hpp>  
 #include "projectile.h"
+#include "animation.hpp"
 class effect
 {
     protected:
@@ -81,11 +82,11 @@ class enemy : public entity
         {
             return this->HP;
         }
-        const sf::FloatRect getrect() const override
+        virtual const sf::FloatRect getrect() const override
         {
             return this->model.getGlobalBounds();
         }
-        void render(sf::RenderTarget * target) const
+        virtual void render(sf::RenderTarget * target)
         {
             target->draw(this->model);
         }
@@ -119,6 +120,14 @@ public:
                 enemy_projectiles.push_back(projectile("enemy", direction, 24.0f, player_pos, this->model.getPosition(), rh));
             }
         }
+        virtual const sf::FloatRect getrect() const override
+        {
+            return this->model.getGlobalBounds();
+        }
+        virtual void render(sf::RenderTarget* target) override
+        {
+            target->draw(this->model);
+        }
         entity* clone() const override  { return new fatguy(*this);}
 };
 class bat : public enemy
@@ -143,6 +152,14 @@ public:
             if (this->model.getGlobalBounds().top <= roomwall.top) sign2=1;
             if (this->model.getGlobalBounds().top + this->model.getGlobalBounds().height >= roomwall.top + roomwall.height) sign2=-1;
         }
+        virtual const sf::FloatRect getrect() const override
+        {
+            return this->model.getGlobalBounds();
+        }
+        virtual void render(sf::RenderTarget* target) override
+        {
+            target->draw(this->model);
+        }
         entity* clone() const override  { return new bat(*this);}
 };
 class spider : public enemy
@@ -166,7 +183,50 @@ public:
             direction.y /= length;
             this->model.move(direction * this->speed);
         }
+        virtual const sf::FloatRect getrect() const override
+        {
+            return this->model.getGlobalBounds();
+        }
+        virtual void render(sf::RenderTarget* target) override
+        {
+            target->draw(this->model);
+        }
         entity* clone() const override  { return new spider(*this);}
+};
+class boss : public enemy
+{
+    protected:
+        animation sprite_;
+        sf::Vector2f boss_pos;
+    public:
+        boss(sf::Vector2f pos) : boss_pos(pos), enemy(2000, "final_boss"), sprite_(8, "boss")
+        {
+        }
+        void movement_update([[maybe_unused]] const sf::Vector2f player_pos, std::vector<projectile>& enemy_projectiles, [[maybe_unused]]sf::FloatRect roomwall, [[maybe_unused]]resource_holder& rh) override
+        {
+            //shoot special projectiles every 5 seconds
+            std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+            if(std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 5)
+            {
+                last = now;
+                //shoot projectiles in a semicircle towards the down part of the map
+                for(int i=0;i<8;i++)
+                {
+                    ///broken 4 the moment
+                    enemy_projectiles.push_back(projectile("enemy", sf::Vector2f(cos(i*3.14/4), sin(i*3.14/4)), 24.0f, player_pos, this->model.getPosition(), rh));
+                }
+
+            }
+        }
+        virtual const sf::FloatRect getrect() const override
+        {
+            return this->sprite_.getRect();
+        }
+        virtual void render(sf::RenderTarget* target) override
+        {
+            sprite_.draw(target, boss_pos.x, boss_pos.y);
+        }
+        entity* clone() const override { return new boss(*this); }
 };
 class misc
 {

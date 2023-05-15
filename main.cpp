@@ -12,12 +12,13 @@ int main() {
 #ifdef __linux__
     XInitThreads();
 #endif
-    auto &main_game = Game::start_game();
+    auto& main_game = Game::start_game();
     main_game.create_rooms();
     while (main_game.running())
     {
         main_game.pollEvents();
         main_game.render();
     }
+    
     return 0;
 }

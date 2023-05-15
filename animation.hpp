@@ -1,5 +1,12 @@
 #pragma once
-#include "game_construction.hpp"
+#include <iostream>
+#include <vector>
+#include <string>
+#include <chrono>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
 class animation
 {
     private:
@@ -23,6 +30,7 @@ class animation
                     throw FileError("loading texture of class animation failed");
                 }
                 sprites[i-1].setTexture(textures[i - 1]);
+                sprites[i - 1].setOrigin(0, 0);
             }
         }
         void draw(sf::RenderTarget * target, float x, float y)

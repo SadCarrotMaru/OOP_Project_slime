@@ -16,7 +16,7 @@ void Game::pollEvents()
         case sf::Event::KeyPressed:
             if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
             if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->dungeons_left;
-            //if (this->sfmlEvent.key.code == sf::Keyboard::G) std::cout << ;
+            if (this->sfmlEvent.key.code == sf::Keyboard::G) this->dungeons_left = 1;
             break;
         case::sf::Event::MouseButtonPressed:
             if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)
@@ -82,6 +82,24 @@ void Game::updatePlayer()
             sleep_for(nanoseconds(10));
         }
     }
+    if(this->xr==3 && this->yr==3 && this->dungeons_left==1 && collision::collisionsprites(this->player.getrect(), this->trap_door_.getGlobalBounds()))
+    {
+        this->xr = 0, this->yr = 0;
+        std::cout << "Maybe here?";
+        this->current_room = this->possible_rooms[2];
+        std::cout << " Huh?";
+        this->current_room.get_into_room(rh);
+        std::cout << "It reached here";
+        this->ally_projectiles.clear();
+        this->enemy_projectiles.clear();
+        this->player.setPosition(1400, 1400);
+        sf::Vector2f position_boss(2000.0f, 430.f);
+        boss_ = new boss(position_boss);
+        this->entities.push_back(dynamic_cast<enemy*> (boss_));
+        using namespace std::chrono;
+        using namespace std::this_thread;
+        sleep_for(nanoseconds(10));
+    }
     if (this->player.getHp() <= 0)
         this->endGame = true;
 }
@@ -94,10 +112,20 @@ void Game::setView()
 
     if (this->current_room.getBackgroundRectangle().width > 1620)
     {
-        this->view.setCenter(this->player.getModelCoord());
-        this->view.zoom(1.3f);
-        this->window->setView(this->view);
-        this->view.zoom((float)(1 / 1.3f));
+        if (!(this->xr == 0 && this->yr == 0))
+        {
+            this->view.setCenter(this->player.getModelCoord());
+            this->view.zoom(1.3f);
+            this->window->setView(this->view);
+            this->view.zoom((float)(1 / 1.3f));
+        }
+        else
+        {
+            this->view.setCenter(this->player.getModelCoord());
+            this->view.zoom(3.0f);
+            this->window->setView(this->view);
+            this->view.zoom((float)(1/3.0f));
+        }
     }
     else
     {
@@ -164,6 +192,7 @@ void Game::checkcolliders()
         auto ptr = this->entities[z];
         if (ptr == dynamic_cast<enemy*>(ptr))
         {
+            std::cout << "inamicuuu";
             if (!this->ally_projectiles.empty())
             {
                 for (int i = 0; i < (int)this->ally_projectiles.size(); i++)
@@ -238,6 +267,7 @@ void Game::render()
     this->window->clear();
     this->update();
     this->current_room.display_background(this->window);
+    if (this->xr==3 && this->yr==3 && this->dungeons_left == 1) this->window->draw(this->trap_door_);
     if (!this->ally_projectiles.empty())
     {
         for (int i = 0; i < (int)this->ally_projectiles.size(); i++)
@@ -256,8 +286,8 @@ void Game::render()
     }
     this->render_enemy();
     this->player.render(this->window);
-    //this->boss.draw(this->window, 300, 300);
     this->window->setView(this->window->getDefaultView());
+    sf::Vector2f help(200, 200);
     this->GUI_.update_GUI(this->player.getHP(), this->window);
     this->setView();
     this->window->display();
@@ -359,6 +389,8 @@ void Game::create_rooms()
     this->possible_rooms.push_back(room1);
     room room2("assets/background2.png", "0000", 180, 240);
     this->possible_rooms.push_back(room2);
+    room room3("assets/boss_room.png", "0000", 450, 680); //450,680
+    this->possible_rooms.push_back(room3);
     this->generate_dungeon();
 }
 

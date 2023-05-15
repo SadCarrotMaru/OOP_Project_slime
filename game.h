@@ -13,15 +13,22 @@
 class Game
 {
 private:
-    Game() : boss(8, "boss")
+    Game() 
     {
         this->dungeons_left = 0;
         if (!music.openFromFile("assets/8bitmusic.mp3"))
         {
             throw FileError("music loading error");
         }
+        if (!trap_door.loadFromFile("assets/trap_door.png"))
+        {
+            throw FileError("trap door loading error");
+        }
+        trap_door_.setTexture(trap_door);
+        trap_door_.setOrigin(trap_door_.getGlobalBounds().width / 2, trap_door_.getGlobalBounds().height / 2);
+        trap_door_.setPosition(805, 680);
         music.setLoop(true);
-        music.play();
+        //music.play();
         xr = yr = 3;
         for (int i = 1; i <= 6; i++)
         {
@@ -41,8 +48,8 @@ private:
         this->endGame = false;
     }
     GUI GUI_;
-    animation boss;
     static sf::Music music;
+    boss* boss_;
     sf::VideoMode videoMode;
     sf::View view;
     bool endGame;
@@ -60,6 +67,8 @@ private:
     std::vector<entity*>entities;
     Player player;
     int dungeons_left;
+    sf::Texture trap_door;
+    sf::Sprite trap_door_;
 
     sf::Font font;
     sf::Text guiText;

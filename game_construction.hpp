@@ -199,7 +199,7 @@ class boss : public enemy
         animation sprite_;
         sf::Vector2f boss_pos;
     public:
-        boss(sf::Vector2f pos) : boss_pos(pos), enemy(2000, "final_boss"), sprite_(8, "boss")
+        boss(sf::Vector2f pos) : enemy(2000, "final_boss"), sprite_(8, "boss"), boss_pos(pos)
         {
         }
         void movement_update([[maybe_unused]] const sf::Vector2f player_pos, std::vector<projectile>& enemy_projectiles, [[maybe_unused]]sf::FloatRect roomwall, [[maybe_unused]]resource_holder& rh) override

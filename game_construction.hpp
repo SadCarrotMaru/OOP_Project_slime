@@ -71,7 +71,7 @@ class enemy : public entity
     public:
 
         enemy(const int maxhp, const std::string& name) : entity(maxhp), enemy_name(name) { this->speed = 0.0f; this->sign1 = this->sign2 = 0; };
-        virtual void movement_update(const sf::Vector2f player_pos, std::vector<projectile>& enemy_projectiles, sf::FloatRect roomwall, resource_holder& rh) { std::cout << "test"; };
+        virtual void movement_update([[maybe_unused]] const sf::Vector2f player_pos, [[maybe_unused]] std::vector<projectile>& enemy_projectiles, [[maybe_unused]]sf::FloatRect roomwall, [[maybe_unused]]resource_holder& rh) { std::cout << "test"; };
         virtual ~enemy() = default; 
         void getdamage (const int damagetaken) override
         {

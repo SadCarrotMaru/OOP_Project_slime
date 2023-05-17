@@ -4,7 +4,9 @@ class GUI
 	protected:
         //sf::RectangleShape hp_bar;
         sf::Texture hp_full_heart, hp_half_heart, hp_zero_heart;
+        sf::Texture shield;
         std::vector<sf::Sprite>hearts;
+        sf::Sprite shield_;
         const int hp_hearts = 10, heart_value = 10;
         public:
         GUI()
@@ -21,6 +23,12 @@ class GUI
             {
                 throw FileError("loading hp_zero_heart failed");
             }
+            if (!shield.loadFromFile("assets/defend.png"))
+            {
+                throw FileError("loading ability logo failed");
+            }
+            shield_.setTexture(shield);
+            shield_.setPosition(850,850);
             for (int i = 0; i < hp_hearts; i++)
             {
                 sf::Sprite temp;
@@ -38,7 +46,7 @@ class GUI
             hp_bar.setPosition(0, 0);
             */
         }
-        void update_GUI(int current_hp, sf::RenderTarget * target)
+        void update_GUI(int current_hp, sf::RenderTarget * target, double time)
         {
             for (int i = 0; i < hp_hearts; i++)
             {
@@ -58,6 +66,10 @@ class GUI
                 }
                 target->draw(hearts[i]);
             }
+            double hue = 255 / 5 * time;
+            if (hue > 255) hue = 255;
+            shield_.setColor(sf::Color(255, 255, 255, hue));
+            target->draw(shield_);
             //hp_bar.setSize(sf::Vector2f(current_hp, 50));
             //target->draw(hp_bar);
         }

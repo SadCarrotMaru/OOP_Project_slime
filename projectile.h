@@ -38,7 +38,7 @@ class resource_holder {
         sf::Texture door_texture_north, door_texture_east, door_texture_south, door_texture_west;
         //boss
         resource_holder()
-        {
+        { 
             if (!projectile_texture.loadFromFile("assets/projectile.png"))
             {
                 throw FileError("loading projectile failed");
@@ -96,7 +96,7 @@ protected:
     sf::Vector2f destination;
     float projectile_speed;
 public:
-    projectile(const std::string& type_of_projectile_, const sf::Vector2f& direction_, float projectile_speed_, const sf::Vector2f& destination_, sf::Vector2f playerpos_, resource_holder &rh);
+    projectile(const std::string& type_of_projectile_, const sf::Vector2f& direction_, float projectile_speed_, sf::Vector2f startpos_, resource_holder &rh);
     void update();
     void render(sf::RenderTarget* target);
     bool check(const sf::FloatRect rect);

@@ -19,6 +19,6 @@ int main() {
         main_game.pollEvents();
         main_game.render();
     }
-    
+
     return 0;
 }

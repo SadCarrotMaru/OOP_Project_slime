@@ -11,6 +11,10 @@ void Player::getdamage(const int damagetaken)
 			this->HP = this->MAXHP;
 	}
 }
+void Player::updateTime()
+{
+	last = std::chrono::high_resolution_clock::now();
+}
 void Player::initVariables()
 {
 	this->movementSpeed = 10.f;

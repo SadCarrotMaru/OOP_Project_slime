@@ -15,8 +15,17 @@ void Game::pollEvents()
             break;
         case sf::Event::KeyPressed:
             if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
-            if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->dungeons_left;
+            if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->entities.size();
             if (this->sfmlEvent.key.code == sf::Keyboard::G) this->dungeons_left = 1;
+            if (this->sfmlEvent.key.code == sf::Keyboard::F)
+            {
+                std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+                if (std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 5)
+                {
+                    last = now;
+                    this->player.updateTime();
+                }
+            }
             break;
         case::sf::Event::MouseButtonPressed:
             if (this->sfmlEvent.mouseButton.button == sf::Mouse::Left)
@@ -28,7 +37,7 @@ void Game::pollEvents()
                 auto length = float(sqrt((direction.x * direction.x) + (direction.y * direction.y)));
                 direction.x /= length;
                 direction.y /= length;
-                ally_projectiles.push_back(projectile("allied", direction, 15.0f, mousePosF, playerPos, rh));
+                ally_projectiles.push_back(projectile("allied", direction, 15.0f, playerPos, rh));
             }
             break;
         default:
@@ -96,6 +105,7 @@ void Game::updatePlayer()
         sf::Vector2f position_boss(2000.0f, 430.f);
         boss_ = new boss(position_boss);
         this->entities.push_back(dynamic_cast<enemy*> (boss_));
+        // put music
         using namespace std::chrono;
         using namespace std::this_thread;
         sleep_for(nanoseconds(10));
@@ -192,7 +202,6 @@ void Game::checkcolliders()
         auto ptr = this->entities[z];
         if (ptr == dynamic_cast<enemy*>(ptr))
         {
-            std::cout << "inamicuuu";
             if (!this->ally_projectiles.empty())
             {
                 for (int i = 0; i < (int)this->ally_projectiles.size(); i++)
@@ -287,8 +296,26 @@ void Game::render()
     this->render_enemy();
     this->player.render(this->window);
     this->window->setView(this->window->getDefaultView());
+    if (this->xr == 0 && this->yr == 0)
+    {
+       // std::cout << this->entities.size();
+        std::vector<enemy*> tempenemi;
+        tempenemi.clear();
+        auto reply = dynamic_cast<boss*>(this->entities[1])->get_text();
+        tempenemi = dynamic_cast<boss*>(this->entities[1])->getBuffer();
+        for (auto i : tempenemi)
+            this->entities.push_back(i);
+        //std::cout << this->entities.size();
+        reply->setPosition(430, 50);
+        if (reply->getString() != "0" && reply->getString() != "-1")
+            this->window->draw(*reply);
+        if (reply->getString() == "0")
+            this->player.getdamage(15), std::cout<<"AAAAA";
+    }
     sf::Vector2f help(200, 200);
-    this->GUI_.update_GUI(this->player.getHP(), this->window);
+    std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+    double time_diff = std::chrono::duration_cast<std::chrono::seconds>(now - last).count();
+    this->GUI_.update_GUI(this->player.getHP(), this->window, time_diff);
     this->setView();
     this->window->display();
 }

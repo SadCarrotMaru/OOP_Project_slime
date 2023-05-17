@@ -31,6 +31,7 @@ public:
 
 	///Updates
 	void setPosition(float x, float y);
+	void updateTime();
 	void updateInput();
 	void updateMapBoundsCollision(sf::FloatRect rect);
 	int update(sf::FloatRect rect, room* currentroom);

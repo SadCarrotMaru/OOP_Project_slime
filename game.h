@@ -74,6 +74,8 @@ private:
     sf::Text guiText;
     sf::Text endGameText;
 
+    std::chrono::high_resolution_clock::time_point last = std::chrono::high_resolution_clock::now();
+
     //methods
     void update();
 

@@ -221,7 +221,7 @@ class boss : public enemy
         sf::Font font;
         sf::Text text;
     public:
-        explicit boss(sf::Vector2f pos) : enemy(2000, "final_boss"), sprite_(8, "boss"), boss_pos(pos)
+        explicit boss(sf::Vector2f pos) : enemy(3500, "final_boss"), sprite_(8, "boss"), boss_pos(pos)
         {
             attack_ = 0;
 
@@ -246,13 +246,12 @@ class boss : public enemy
         {
             
             std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
-            static int attack_projectile_status=0;
             switch (attack_)
             {
                 case 2:
                 if (std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 3)
                 {
-                   
+                    static int attack_projectile_status = 0;
                     //shoot projectiles in a semicircle towards the down part of the map
                     int nr_projectiles = 20;
                     double angle = 0, angleincrement = 3.14159265359 / nr_projectiles;
@@ -334,9 +333,10 @@ class boss : public enemy
                     }
                     break;
                 case 0:
-                    static int status_attack;
+                    
                     if (std::chrono::duration_cast<std::chrono::seconds>(now - last).count() >= 2)
                     {
+                        static int status_attack;
                         if (std::chrono::duration_cast<std::chrono::seconds>(now - last).count() <= 3)
                             text.setString("3");
                         else if (std::chrono::duration_cast<std::chrono::seconds>(now - last).count() <= 4)
@@ -379,7 +379,6 @@ class boss : public enemy
             this->buffer_minions.clear();
             return tempBuffer;
         }
-        
         virtual const sf::FloatRect getrect() const override
         {
             return this->sprite_.getRect();

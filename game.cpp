@@ -15,7 +15,7 @@ void Game::pollEvents()
             break;
         case sf::Event::KeyPressed:
             if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
-            if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->entities.size();
+            if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->dungeons_left;
             if (this->sfmlEvent.key.code == sf::Keyboard::G) this->dungeons_left = 1;
             if (this->sfmlEvent.key.code == sf::Keyboard::F)
             {
@@ -45,7 +45,6 @@ void Game::pollEvents()
         }
     }
 }
-
 void Game::updatePlayer()
 {
     if (collision::collisionsprites(this->player.getrect(), this->current_room.get_heart()))
@@ -101,11 +100,22 @@ void Game::updatePlayer()
         std::cout << "It reached here";
         this->ally_projectiles.clear();
         this->enemy_projectiles.clear();
-        this->player.setPosition(1400, 1400);
+        this->player.setPosition(3000, 2000);
+        if (!music.openFromFile("assets/boss.mp3"))
+        {
+            throw FileError("music loading error");
+        }
+        music.setLoop(true);
+        music.setVolume(50);
+        music.play();
         sf::Vector2f position_boss(2000.0f, 430.f);
         boss_ = new boss(position_boss);
         this->entities.push_back(dynamic_cast<enemy*> (boss_));
         // put music
+        this->boss_hp.setPosition(2100.0f,1230.0f);
+        this->boss_hp.setOrigin(0, 0);
+        this->boss_hp.setFillColor(sf::Color::Red);
+        this->boss_hp.setSize(sf::Vector2f(700,50));
         using namespace std::chrono;
         using namespace std::this_thread;
         sleep_for(nanoseconds(10));
@@ -265,7 +275,13 @@ void Game::update()
         this->updateProjectiles();
         this->handle_enemy();
         this->checkcolliders();
-    }
+        if (this->xr == 0 && this->yr == 0)
+        {
+            this->boss_hp.setSize(sf::Vector2f(700.0f / 3500.0f * this->boss_->getHP(),50));
+            if (this->boss_->getHP() == 0)
+                this->window->close();
+        }
+    }    
     if (this->endGame)
     {
         this->window->close();
@@ -295,6 +311,7 @@ void Game::render()
     }
     this->render_enemy();
     this->player.render(this->window);
+    if(this->xr == 0 && this->yr ==0) this->window->draw(boss_hp);
     this->window->setView(this->window->getDefaultView());
     if (this->xr == 0 && this->yr == 0)
     {

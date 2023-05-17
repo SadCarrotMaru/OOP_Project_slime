@@ -28,7 +28,8 @@ private:
         trap_door_.setOrigin(trap_door_.getGlobalBounds().width / 2, trap_door_.getGlobalBounds().height / 2);
         trap_door_.setPosition(805, 680);
         music.setLoop(true);
-        //music.play();
+        music.setVolume(50);
+        music.play();
         xr = yr = 3;
         for (int i = 1; i <= 6; i++)
         {
@@ -57,6 +58,7 @@ private:
     std::vector<room>possible_rooms;
     std::vector<projectile>ally_projectiles;
     std::vector<projectile>enemy_projectiles;
+    sf::RectangleShape boss_hp;
     room current_room;
     resource_holder rh;
     //room layout

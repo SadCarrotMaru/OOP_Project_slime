@@ -223,6 +223,7 @@ void Game::checkcolliders()
                         this->ally_projectiles.erase(this->ally_projectiles.begin() + i);
                         if (ptr->getHP() <= 0)
                         {
+                            //delete ptr;
                             this->entities.erase(this->entities.begin() + z);
                             if (this->entities.size() == 1)
                             {
@@ -230,7 +231,7 @@ void Game::checkcolliders()
                                 this->current_room.setheart(true);
                                 this->dungeons_left--;
                             }
-                            //delete ptr;
+                            
                         }
                         break;
                     }
@@ -254,8 +255,9 @@ void Game::checkcolliders()
                         this->enemy_projectiles.erase(this->enemy_projectiles.begin() + i);
                         if (ptr->getHP() <= 0)
                         {
-                            this->entities.erase(this->entities.begin() + z);
                             //delete ptr;
+                            this->entities.erase(this->entities.begin() + z);
+                            
                             /// end the game
                         }
                         break;
@@ -318,16 +320,20 @@ void Game::render()
        // std::cout << this->entities.size();
         std::vector<enemy*> tempenemi;
         tempenemi.clear();
-        auto reply = dynamic_cast<boss*>(this->entities[1])->get_text();
-        tempenemi = dynamic_cast<boss*>(this->entities[1])->getBuffer();
-        for (auto i : tempenemi)
-            this->entities.push_back(i);
-        //std::cout << this->entities.size();
-        reply->setPosition(430, 50);
-        if (reply->getString() != "0" && reply->getString() != "-1")
-            this->window->draw(*reply);
-        if (reply->getString() == "0")
-            this->player.getdamage(15), std::cout<<"AAAAA";
+        if (entities.size() > 1)
+        {
+            auto reply = dynamic_cast<boss*>(this->entities[1])->get_text();
+            tempenemi = dynamic_cast<boss*>(this->entities[1])->getBuffer();
+
+            for (auto i : tempenemi)
+                this->entities.push_back(i);
+            //std::cout << this->entities.size();
+            reply->setPosition(430, 50);
+            if (reply->getString() != "0" && reply->getString() != "-1")
+                this->window->draw(*reply);
+            if (reply->getString() == "0")
+                this->player.getdamage(15), std::cout << "AAAAA";
+        }
     }
     sf::Vector2f help(200, 200);
     std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();

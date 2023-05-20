@@ -101,6 +101,7 @@ public:
     }
     ~Game()
     {
+        delete this->boss_;
         delete this->window;
     }
     ///Accessors

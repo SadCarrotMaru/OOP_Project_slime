@@ -1,61 +1,28 @@
-# OOP Template
+# Unravelling Unknowns
+![Image](https://cdn.discordapp.com/attachments/590882567780171796/1109406710046662758/4328aaa8-9ae2-4c26-89fd-e6fe96ff6a85.jpg)
 
-Resurse: https://bindingofisaacrebirth.fandom.com/wiki/Binding_of_Isaac:_Rebirth_Wiki <br>
-Proiect: Doresc a realiza un joc 2D cu dungeon-uri. Deoarece imi e destul de greu cu procurarea de imagini specifice jocului voi folosi sprite-uri de la un alt joc (link-ul de mai sus). <br>
+
+Dungeon game. Scopul e de a elimina inamicii din fiecare camera din labirint. Dupa aceea in centrul labirintului, locul in care te spawnezi, va aparea o trapa care te va duce in ultima camera. <br>
+Comenzi:
+- w/a/s/d - movement
+- f - abilitate de imunitate (0.30 s) <br>
+
+Cheat code:
+
+- g - spawneaza direct trapa pentru final boss <br>
+
+Boss attacks:
+
+- Val de proiectile
+- Summon-uri la inamici mai mici: lilieci si magiciani.
+- Countdown pana cand player-ul va primi damage inevitabil, este sugerata folosirea abilitatii pentru acest atac.
+
 V0.1: Deocamdata este doar caracterul care se misca intr-o camera. <br>
-### Tema 0
-
-- [x] Nume proiect (poate fi schimbat ulterior)
-- [x] Scurtă descriere a temei alese, ce v-ați propus să implementați
-
-## Tema 1
-
-#### Cerințe
-- [x] definirea a minim 3-4 clase folosind compunere
-- [x] constructori de inițializare
-- [x] pentru o clasă: constructor de copiere, `operator=` de copiere, destructor
-<!-- - [x] pentru o altă clasă: constructor de mutare, `operator=` de mutare, destructor -->
-<!-- - [x] pentru o altă clasă: toate cele 5 funcții membru speciale -->
-- [x] `operator<<` pentru toate clasele pentru afișare (std::ostream)
-- [x] cât mai multe `const` (unde este cazul)
-- [x] implementarea a minim 3 funcții membru publice pentru funcționalități specifice temei alese
-- [x] scenariu de utilizare a claselor definite:
-  - crearea de obiecte și apelarea funcțiilor membru publice în main
-  - vor fi adăugate în fișierul `tastatura.txt` exemple de date de intrare de la tastatură (dacă există)
-- [x] tag de `git`: de exemplu `v0.1`
-- [x] serviciu de integrare continuă (CI); exemplu: GitHub Actions
-
-## Tema 2
-
-#### Cerințe
-- [x] separarea codului din clase în `.h` (sau `.hpp`) și `.cpp`
-- [x] moșteniri
-  - [ ] clasă cu atribut de tip pointer la o clasă de bază cu derivate
-  - [ ] funcții virtuale (pure) apelate prin pointeri de bază din clasa de mai sus, constructori virtuali (clone)
-    - minim o funcție virtuală va fi **specifică temei** (e.g. nu simple citiri/afișări)
-  - [ ] apelarea constructorului din clasa de bază din constructori din derivate
-  - [ ] smart pointers
-  - [ ] `dynamic_cast`
-- [ ] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
-- [x] excepții
-  - [x] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim 2 clase pentru erori specifice
-  - [x] utilizare cu sens: de exemplu, `throw` în constructor, `try`/`catch` în `main`
-- [x] funcții și atribute `static`
-- [x] STL
-- [x] cât mai multe `const`
-- [x] la sfârșit: commit separat cu adăugarea unei noi derivate fără a modifica restul codului
-- [x] tag de `git`: de exemplu `v0.2`
-
-## Tema 3
-
-#### Cerințe
-- [ ] 2 șabloane de proiectare (design patterns)
-- [ ] o funcție șablon (template) cu sens; minim 2 instanțieri
-- [ ] o clasă șablon cu sens; minim 2 instanțieri
-<!-- - [ ] o specializare pe funcție/clasă șablon -->
-- [ ] tag de `git`: de exemplu `v0.3` sau `v1.0`
+V0.23: Jocul este aproape gata, mai trebuie adaugat un mesaj cand player-ul infrange ultimul inamic ( final boss-ul) + optimizari de program ( delete la unii pointeri ) 
 
 ## Resurse
 
 - [SFML](https://github.com/SFML/SFML/tree/aa82ea132b9296a31922772027ad5d14c1fa381b) (Zlib)
-- adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit
+- [Unele sprite-uri](https://bindingofisaacrebirth.fandom.com/wiki/Binding_of_Isaac:_Rebirth_Wiki)
+- [Banner](https://github.com/VSebastian8)
+- Unele sprite-uri sunt luate de pe site-uri precum https://craftpix.net/freebies/. Majoritatea sunt editate si prelucrate.

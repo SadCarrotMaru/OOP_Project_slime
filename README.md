@@ -24,5 +24,5 @@ V0.23: Jocul este aproape gata, mai trebuie adaugat un mesaj cand player-ul infr
 
 - [SFML](https://github.com/SFML/SFML/tree/aa82ea132b9296a31922772027ad5d14c1fa381b) (Zlib)
 - [Unele sprite-uri](https://bindingofisaacrebirth.fandom.com/wiki/Binding_of_Isaac:_Rebirth_Wiki)
-- [Banner](https://github.com/VSebastian8)
+- [Banner + model](https://github.com/VSebastian8)
 - Unele sprite-uri sunt luate de pe site-uri precum https://craftpix.net/freebies/. Majoritatea sunt editate si prelucrate.

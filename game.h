@@ -6,7 +6,6 @@
 #include <chrono>
 
 #include "player.h"
-#include "game_construction.hpp"
 #include "player_gui.hpp"
 #include "animation.hpp"
 

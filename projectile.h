@@ -27,6 +27,10 @@ class FileError : public Error {
 public:
     explicit FileError(const char* message) : Error(message) {}
 };
+class UnluckyRNG : public Error {
+public:
+    explicit UnluckyRNG(const char* message) : Error(message) {}
+};
 class resource_holder {
     public:
         sf::Texture projectile_texture;

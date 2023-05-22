@@ -1,5 +1,4 @@
 #include "game.h"
-
 bool Game::running() const
 {
     return this->window->isOpen();
@@ -442,6 +441,10 @@ void Game::create_rooms()
     room room3("assets/boss_room.png", "0000", 450, 680); //450,680
     this->possible_rooms.push_back(room3);
     this->generate_dungeon();
+    if (this->dungeons_left < 3)
+    {
+        throw UnluckyRNG("Dungeon size too small. Aborting process");
+    }
 }
 
 

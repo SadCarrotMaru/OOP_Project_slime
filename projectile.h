@@ -8,6 +8,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include "singleton.h"
 class Error : public std::exception {
 public:
     explicit Error(const char* message) : message(message) {}
@@ -23,7 +24,7 @@ public:
     explicit TextureError(const char* message) : Error(message) {}
 };
 
-class FileError : public Error {
+class FileError : public Error {    
 public:
     explicit FileError(const char* message) : Error(message) {}
 };
@@ -31,13 +32,14 @@ class UnluckyRNG : public Error {
 public:
     explicit UnluckyRNG(const char* message) : Error(message) {}
 };
-class resource_holder {
+class resource_holder : public Singleton<resource_holder> {
     public:
         sf::Texture projectile_texture;
         sf::Texture enemy_projectile_texture;
         sf::Texture bat_texture;
         sf::Texture spider_texture;
         sf::Texture fat_guy;
+        sf::Texture sword_ab;
         std::vector<sf::Texture> boss_textures;
         sf::Texture door_texture_north, door_texture_east, door_texture_south, door_texture_west;
         //boss
@@ -62,6 +64,10 @@ class resource_holder {
             if (!fat_guy.loadFromFile("assets/fat_guy.png"))
             {
                 throw FileError("loading fat guy failed");
+            }  
+            if (!sword_ab.loadFromFile("assets/sword/sword1.png"))
+            {
+                throw FileError("loading sword_ab failed");
             }
             for (int i = 1; i <= 8; i++)
             {
@@ -100,11 +106,12 @@ protected:
     sf::Vector2f destination;
     float projectile_speed;
 public:
-    projectile(const std::string& type_of_projectile_, const sf::Vector2f& direction_, float projectile_speed_, sf::Vector2f startpos_, resource_holder &rh);
+    projectile(const std::string& type_of_projectile_, const sf::Vector2f& direction_, float projectile_speed_, sf::Vector2f startpos_, resource_holder &rh, float rotation = 0 );
     void update();
     void render(sf::RenderTarget* target);
     bool check(const sf::FloatRect rect);
     sf::FloatRect get_projectile() const;
+    std::string get_type_of_projectile() const;
     projectile(const projectile& other): projectile_sprite(other.projectile_sprite), type_of_projectile(other.type_of_projectile), direction(other.direction), destination(other.destination), projectile_speed(other.projectile_speed) {
 
     }

@@ -13,6 +13,38 @@ void Game::pollEvents()
             this->window->close();
             break;
         case sf::Event::KeyPressed:
+            if (this->sfmlEvent.key.code == sf::Keyboard::M)
+            {
+                this->display_map();
+            }
+            if (this->sfmlEvent.key.code == sf::Keyboard::T)
+            {
+                if(this->charges_ability>0)
+                {
+                    this->ability_.setScale(1, 1);
+                    this->ability_.setOrigin(this->ability_.getLocalBounds().width / 2, this->ability_.getLocalBounds().height / 2);
+                    this->ability_.setPosition(this->player.getModelCoord());
+                    this->ability_launched = true;
+                    this->charges_ability--;
+                }
+            }
+            if (this->sfmlEvent.key.code == sf::Keyboard::Q)
+            {
+                std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
+                if (std::chrono::duration_cast<std::chrono::seconds>(now - last2).count() >= 2)
+                {
+                    last2 = now;
+                    sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
+                    auto mousePosF = (*window).mapPixelToCoords(mousePos);
+                    sf::Vector2f playerPos = this->player.getModelCoord();
+                    sf::Vector2f direction = mousePosF - playerPos;
+                    auto length = float(sqrt((direction.x * direction.x) + (direction.y * direction.y)));
+                    direction.x /= length;
+                    direction.y /= length;
+                    float rotation = std::atan2(direction.y, direction.x) * 180 / std::acos(-1.0);
+                    ally_projectiles.push_back(projectile("ability_sword", direction, 25.0f, playerPos, rh, rotation));
+                }
+            }
             if (this->sfmlEvent.key.code == sf::Keyboard::X) std::cout << this->player;
             if (this->sfmlEvent.key.code == sf::Keyboard::Z) std::cout << this->dungeons_left;
             if (this->sfmlEvent.key.code == sf::Keyboard::G) this->dungeons_left = 1;
@@ -44,8 +76,56 @@ void Game::pollEvents()
         }
     }
 }
+
+void Game::display_map()
+{
+    std::vector<std::vector<sf::RectangleShape>>map__;
+    map__.clear();
+    sf::RectangleShape rectangle;
+    rectangle.setSize(sf::Vector2f(50, 50));
+    rectangle.setOutlineColor(sf::Color::Black);
+    rectangle.setOutlineThickness(5);
+    rectangle.setPosition(300, 250);
+    rectangle.setFillColor(sf::Color::Black);
+    this->window->setView(this->window->getDefaultView());
+    for (int i = 1; i <= 6; i++)
+    {
+        std::vector<sf::RectangleShape>temp;
+        map__.push_back(temp);
+        for (int j = 1; j <= 6; j++)
+        {
+            if (this->visited[i][j] == true)
+            {
+                if (this->roomlayout[i][j].get_level_clear() == true) rectangle.setFillColor(sf::Color::Blue);
+                    else rectangle.setFillColor(sf::Color::Red);
+            }
+            else rectangle.setFillColor(sf::Color::Black);
+            if (i == 3 && j == 3) rectangle.setFillColor(sf::Color::Magenta);
+            if (this->xr == i && this->yr == j) rectangle.setFillColor(sf::Color::Green);
+            rectangle.setPosition(300 + (j - 1) * 50, 250 + (i - 1) * 50);
+            map__[map__.size() - 1].push_back(rectangle);
+            this->window->draw(map__[i - 1][j - 1]);
+        }
+    }
+    this->window->display();
+    int ok = 0;
+    while (1)
+    {
+        while (this->window->pollEvent(this->sfmlEvent))
+        {
+            if (this->sfmlEvent.type == sf::Event::KeyPressed && this->sfmlEvent.key.code == sf::Keyboard::M) { ok = 1; break; }
+        }
+        if (ok) break;
+    }
+}
 void Game::updatePlayer()
 {
+    static int help;
+    if (this->dungeons_left <= this->init_dungeons / 2 && this->dungeons_left > 1 && small_help == 0)
+        this->player.updateModel_progress(1), this->charges_ability = 2, small_help = 1;
+    else if (this->dungeons_left <= 1 && small_help == 1)
+        this->player.updateModel_progress(2), this->charges_ability = 2, small_help = 2;
+
     if (collision::collisionsprites(this->player.getrect(), this->current_room.get_heart()))
     {
         this->player.getdamage(-10);
@@ -64,7 +144,7 @@ void Game::updatePlayer()
         }
         if (temp != 4)
         {
-            std::cout << xr << ' ' << yr << ' ';
+            //std::cout << xr << ' ' << yr << ' ';
             this->current_room = this->roomlayout[this->xr][this->yr];
             this->current_room.get_into_room(rh);
             if (this->current_room.get_level_clear() == false)
@@ -96,7 +176,7 @@ void Game::updatePlayer()
         this->current_room = this->possible_rooms[2];
         std::cout << " Huh?";
         this->current_room.get_into_room(rh);
-        std::cout << "It reached here";
+       // std::cout << "It reached here";
         this->ally_projectiles.clear();
         this->enemy_projectiles.clear();
         this->player.setPosition(3000, 2000);
@@ -156,6 +236,35 @@ void Game::setView()
 }
 void Game::updateProjectiles()
 {
+    if (this->ability_launched == true)
+    {
+        this->ability_.scale(1.05, 1.05);
+        for (int z = 0; z < (int)this->entities.size(); z++)
+        {
+            auto ptr = this->entities[z];
+            if (ptr == dynamic_cast<enemy*>(ptr))
+            {
+                sf::FloatRect drept = ptr->getrect();
+                sf::Vector2f pos_inamic(drept.left + drept.width / 2, drept.top + drept.height / 2);
+                double dist_de_centru = std::sqrt((this->ability_.getPosition().x - pos_inamic.x) * (this->ability_.getPosition().x - pos_inamic.x) + (this->ability_.getPosition().y - pos_inamic.y) * (this->ability_.getPosition().y - pos_inamic.y));
+                if (dist_de_centru <= this->ability_.getGlobalBounds().width / 2 && dist_de_centru > this->ability_.getGlobalBounds().width / 2 - (15 * this->ability_.getGlobalBounds().width / 100)   )
+                {
+                    ptr->getdamage(100);
+                    if (ptr->getHP() <= 0)
+                    {
+                        this->entities.erase(this->entities.begin() + z);
+                        if (this->entities.size() == 1)
+                        {
+                            this->roomlayout[this->xr][this->yr].setheart(true);
+                            this->current_room.setheart(true);
+                            this->dungeons_left--;
+                        }
+                    }
+                }
+            }
+        }
+        if (this->ability_.getGlobalBounds().width > 10000) ability_launched = false;
+    }
     if (!this->ally_projectiles.empty())
     {
         for (int i = 0; i < (int)this->ally_projectiles.size(); i++)
@@ -218,8 +327,8 @@ void Game::checkcolliders()
                     auto projectile_ = &(this->ally_projectiles[i]);
                     if (collision::collisionsprites(ptr->getrect(), projectile_->get_projectile()))
                     {
-                        ptr->getdamage(10);
-                        this->ally_projectiles.erase(this->ally_projectiles.begin() + i);
+                        if(!(projectile_->get_type_of_projectile() == "ability_sword" && this->dungeons_left==1&&z==1)) ptr->getdamage(10);
+                        if(projectile_->get_type_of_projectile() != "ability_sword") this->ally_projectiles.erase(this->ally_projectiles.begin() + i);
                         if (ptr->getHP() <= 0)
                         {
                             //delete ptr;
@@ -310,6 +419,7 @@ void Game::render()
             projectile_->render(this->window);
         }
     }
+    if (this->ability_launched == true) this->window->draw(this->ability_);
     this->render_enemy();
     this->player.render(this->window);
     if(this->xr == 0 && this->yr ==0) this->window->draw(boss_hp);
@@ -337,7 +447,8 @@ void Game::render()
     sf::Vector2f help(200, 200);
     std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
     double time_diff = std::chrono::duration_cast<std::chrono::seconds>(now - last).count();
-    this->GUI_.update_GUI(this->player.getHP(), this->window, time_diff);
+    double time_diff2 = std::chrono::duration_cast<std::chrono::seconds>(now - last2).count();
+    this->GUI_.update_GUI(this->player.getHP(), this->window, time_diff, time_diff2, charges_ability);
     this->setView();
     this->window->display();
 }
@@ -351,7 +462,7 @@ void Game::fill_dungeon(int x, int y)
 {
     this->visited[x][y] = true;
     this->dungeons_left++;
-    std::cout << "A intrat in: " << x << ' ' << y << std::endl;
+    //std::cout << "A intrat in: " << x << ' ' << y << std::endl;
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_int_distribution<int> dist(0, 1);
@@ -410,9 +521,11 @@ void Game::generate_dungeon()
     this->roomlayout[3][3] = this->possible_rooms[0];
     this->roomlayout[3][3].set_level_clear(true);
     this->fill_dungeon(3, 3);
+    this->init_dungeons = this->dungeons_left;
     this->current_room = this->roomlayout[3][3];
     this->current_room.get_into_room(rh);
     this->xr = this->yr = 3;
+    /*
     for (int i = 1; i <= 6; i++)
     {
         for (int j = 1; j <= 6; j++)
@@ -430,6 +543,7 @@ void Game::generate_dungeon()
             std::cout << '\n';
         }
     }
+    */
 }
 
 void Game::create_rooms()

@@ -45,7 +45,7 @@ void room::get_into_room(const resource_holder& rh)
     door_sprite_east.setPosition(this->rectangle.left + this->rectangle.width, this->rectangle.top + this->rectangle.height / 2 - (float)rh.door_texture_east.getSize().y / 2);
     door_sprite_west.setOrigin(0.f, 0.f);
     door_sprite_west.setPosition(this->rectangle.left - (float)rh.door_texture_west.getSize().x, this->rectangle.top + this->rectangle.height / 2 - (float)rh.door_texture_west.getSize().y / 2);
-    std::cout << rectangle.top << ' ' << rectangle.left << ' ' << rectangle.width << ' ' << rectangle.height << '\n';
+   // std::cout << rectangle.top << ' ' << rectangle.left << ' ' << rectangle.width << ' ' << rectangle.height << '\n';
 }
 void room::display_background(sf::RenderTarget* target)
 {

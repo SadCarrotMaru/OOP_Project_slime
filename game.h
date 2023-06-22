@@ -6,10 +6,11 @@
 #include <chrono>
 
 #include "player.h"
+#include "singleton.h"
 #include "player_gui.hpp"
 #include "animation.hpp"
 
-class Game
+class Game : public Singleton<Game>
 {
 private:
     Game() 
@@ -23,6 +24,12 @@ private:
         {
             throw FileError("trap door loading error");
         }
+        if (!ability.loadFromFile("assets/ability.png"))
+        {
+            throw FileError("ability loading error");
+        }
+        this->ability.setSmooth(true);
+        ability_.setTexture(ability);
         trap_door_.setTexture(trap_door);
         trap_door_.setOrigin(trap_door_.getGlobalBounds().width / 2, trap_door_.getGlobalBounds().height / 2);
         trap_door_.setPosition(805, 680);
@@ -48,7 +55,7 @@ private:
         this->endGame = false;
     }
     GUI GUI_;
-    static sf::Music music;
+    sf::Music music;
     boss* boss_;
     sf::VideoMode videoMode;
     sf::View view;
@@ -64,10 +71,13 @@ private:
     room roomlayout[7][7];
     bool visited[7][7];
     int xr, yr;
+    int charges_ability = 0 ;
+    int small_help = 0;
     sf::Event sfmlEvent{};
     std::vector<entity*>entities;
     Player player;
     int dungeons_left;
+    int init_dungeons;
     sf::Texture trap_door;
     sf::Sprite trap_door_;
 
@@ -76,9 +86,14 @@ private:
     sf::Text endGameText;
 
     std::chrono::high_resolution_clock::time_point last = std::chrono::high_resolution_clock::now();
+    std::chrono::high_resolution_clock::time_point last2 = std::chrono::high_resolution_clock::now();
+    bool ability_launched = false;
+    sf::Texture ability;
+    sf::Sprite ability_;
 
     //methods
     void update();
+    void display_map();
 
     void updatePlayer();
     void setView();

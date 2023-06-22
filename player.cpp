@@ -38,6 +38,26 @@ Player::Player(float x, float y) : entity()
 	this->initShape();
 }
 
+void Player::updateModel_progress(int state)
+{
+	if (state == 1)
+	{
+		if (!player_model.loadFromFile("assets/player1.png"))
+		{
+			throw FileError("loading player failed");
+		}
+	}
+	else if (state == 2)
+	{
+		if (!player_model.loadFromFile("assets/player2.png"))
+		{
+			throw FileError("loading player failed");
+		}
+	}
+	this->player_model.setSmooth(true);
+	this->model.setTexture(player_model);
+}
+
 //Accessors
 
 const int & Player::getHp() const

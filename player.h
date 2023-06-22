@@ -33,6 +33,7 @@ public:
 	void setPosition(float x, float y);
 	void updateTime();
 	void updateInput();
+	void updateModel_progress(int state);
 	void updateMapBoundsCollision(sf::FloatRect rect);
 	int update(sf::FloatRect rect, room* currentroom);
 	void render(sf::RenderTarget* target) const;

@@ -22,7 +22,8 @@ set(debug_mode "$<OR:${is_debug},${is_rel_with_deb}>")
 
 function(set_custom_stdlib_and_sanitizers target add_apple_asan)
     if(MSVC)
-        target_compile_options(${target} PRIVATE "$<${debug_mode}:/fsanitize=address>")
+        set_target_properties(${target} PROPERTIES VS_USER_PROPS "${CMAKE_SOURCE_DIR}/disable_modules.props")
+        target_compile_options(${target} PRIVATE "$<${debug_mode}:/fsanitize=address>" /experimental:module-)
         return()
     endif()
 
@@ -94,7 +95,7 @@ endif()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp player.cpp game_construction.hpp player_gui.hpp projectile.cpp projectile.cpp animation.hpp game.cpp room.h room.cpp)
+add_executable(${PROJECT_NAME} main.cpp player.cpp game_construction.hpp player_gui.hpp projectile.cpp projectile.cpp animation.hpp game.cpp room.cpp )
 
 ###############################################################################
 

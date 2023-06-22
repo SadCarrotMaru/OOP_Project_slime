@@ -7,7 +7,6 @@
 #ifdef __linux__
 #include <X11/Xlib.h>
 #endif
-sf::Music Game::music;
 int main() {
 #ifdef __linux__
     XInitThreads();

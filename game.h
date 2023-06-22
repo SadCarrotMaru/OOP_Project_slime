@@ -115,6 +115,8 @@ public:
     }
     ~Game()
     {
+        for (auto ptr : this->entities)
+            delete ptr;
         delete this->boss_;
         delete this->window;
     }

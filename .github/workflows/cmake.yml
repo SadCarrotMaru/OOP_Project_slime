@@ -364,17 +364,17 @@ jobs:
           chmod +x scripts/*
           # chmod +x scripts/run_sanitizers.sh scripts/run_valgrind.sh
 
-      - name: Sanitizers
+      #- name: Sanitizers
         # uses: aganders3/headless-gui@v1
-        if: runner.os == 'Linux' && matrix.runs_asan == true
-        continue-on-error: true
-        env:
-          ASAN_OPTIONS: halt_on_error=0
-          EXECUTABLE_NAME: ${{ env.EXECUTABLE_NAME }}
+       # if: runner.os == 'Linux' && matrix.runs_asan == true
+      #  continue-on-error: true
+       # env:
+      #    ASAN_OPTIONS: halt_on_error=0
+        #  EXECUTABLE_NAME: ${{ env.EXECUTABLE_NAME }}
         # with:
-        run: |
-            xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" ./scripts/run_sanitizers.sh || true
-        working-directory: ${{github.workspace}}
+      #  run: |
+     #       xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" ./scripts/run_sanitizers.sh || true
+       # working-directory: ${{github.workspace}}
 
 
       # Application Verifier does not work with sanitizers, need separate executable

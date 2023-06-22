@@ -120,7 +120,6 @@ void Game::display_map()
 }
 void Game::updatePlayer()
 {
-    static int help;
     if (this->dungeons_left <= this->init_dungeons / 2 && this->dungeons_left > 1 && small_help == 0)
         this->player.updateModel_progress(1), this->charges_ability = 2, small_help = 1;
     else if (this->dungeons_left <= 1 && small_help == 1)

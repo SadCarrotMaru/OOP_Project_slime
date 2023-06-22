@@ -9,7 +9,8 @@ Comenzi:
 - f - abilitate de imunitate (0.30 s) <br>
 - q - cutit imbibat in magie (ultimul inamic este imun la aceasta abilitate)
 - t - val de magie concentrata care afecteaza toti inamicii din jurul caracterului
-
+- m - harta
+  
 Cheat code:
 
 - g - spawneaza direct trapa pentru final boss <br>

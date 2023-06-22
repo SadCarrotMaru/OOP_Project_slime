@@ -115,8 +115,8 @@ public:
     }
     ~Game()
     {
-       // for (auto ptr : this->entities)
-       //     delete ptr;    ----> pica sanitizerul de pe github, compileaza la infinit :(
+        for (auto ptr : this->entities)
+            delete ptr;    // aparent nu pica de la asta, doar pica in general, nu am idee de ce :(
         delete this->boss_;
         delete this->window;
     }

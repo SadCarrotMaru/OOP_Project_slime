@@ -237,7 +237,7 @@ void Game::updateProjectiles()
 {
     if (this->ability_launched == true)
     {
-        this->ability_.scale(1.05, 1.05);
+        this->ability_.scale(1.05f, 1.05f);
         for (int z = 0; z < (int)this->entities.size(); z++)
         {
             auto ptr = this->entities[z];

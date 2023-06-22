@@ -520,6 +520,22 @@ void Game::generate_dungeon()
     this->roomlayout[3][3] = this->possible_rooms[0];
     this->roomlayout[3][3].set_level_clear(true);
     this->fill_dungeon(3, 3);
+    for (int i = 1; i <= 6; i++)
+    {
+        for (int j = 1; j <= 6; j++)
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                int nx = i, ny = j;
+                if (k == 0) nx--;
+                else if (k == 1) nx++;
+                else if (k == 2) ny++;
+                else ny--;
+                if (this->roomlayout[i][j].getdoor(k) == false && this->visited[nx][ny] == true) this->roomlayout[i][j].set_door(k);
+            }
+            std::cout << '\n';
+        }
+    }
     this->init_dungeons = this->dungeons_left;
     this->current_room = this->roomlayout[3][3];
     this->current_room.get_into_room(rh);

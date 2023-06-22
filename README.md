@@ -3,9 +3,12 @@
 
 
 Dungeon game. Scopul e de a elimina inamicii din fiecare camera din labirint. Dupa aceea in centrul labirintului, locul in care te spawnezi, va aparea o trapa care te va duce in ultima camera. <br>
+Initial nu tii minte cine esti, dar iti aduci aminte pe parcursul jocului. De fiecare data cand iti aduci aminte cine esti, capeti suficienta putere magica pentru a folosi o vraja foarte puternica.
 Comenzi:
 - w/a/s/d - movement
 - f - abilitate de imunitate (0.30 s) <br>
+- q - cutit imbibat in magie (ultimul inamic este imun la aceasta abilitate)
+- t - val de magie concentrata care afecteaza toti inamicii din jurul caracterului
 
 Cheat code:
 
